@@ -13,8 +13,12 @@ class RailPath:
 	var final : bool = false;
 	var index : int = -1;
 	var color : Color = Color.from_hsv(randf(), 0.5, 1.0);
+	
+	var total_length : float = 0.0;
 
-	func get_point_along_path(distance : float) -> Vector2:
+	func get_point_along_path(distance : float) -> RailPointInformation:
+		distance = fposmod(distance, total_length);
+		
 		var pointIndex : int = 0;
 		var p1 := points[pointIndex];
 		var i2 := (pointIndex + 1) % points.size();
@@ -34,7 +38,12 @@ class RailPath:
 			
 		p1 = points[pointIndex];
 		p2 = points[(pointIndex + 1) % points.size()];
-		return p1 + ((p2 - p1).normalized() * distance);
+		var diff := (p2 - p1);
+		var dir := diff.normalized();
+		return RailPointInformation.new(
+			p1 + (dir * distance),
+			Vector2(dir.y, -dir.x)
+		);
 
 	func get_closest_point_information(pos : Vector2) -> RailCloseInformation:
 		var bestDistanceSquared := INF;
@@ -54,20 +63,32 @@ class RailPath:
 			var closestPos := p1 + (lineDirection * closestAccross);
 			var distanceSquared := (pos - closestPos).length_squared();
 			
-			if (bestDistanceSquared <= distanceSquared):
-				continue;
-			bestDistanceSquared = distanceSquared;
-			bestInformation = RailCloseInformation.new(
-				self, 
-				totalDistance + closestAccross,
-				i,
-				Vector2(lineDirection.y, -lineDirection.x), # TODO: might be wrong...
-				closestPos,
-				sqrt(distanceSquared)
-			);
+			if (bestDistanceSquared > distanceSquared):
+				bestDistanceSquared = distanceSquared;
+				bestInformation = RailCloseInformation.new(
+					self, 
+					totalDistance + closestAccross,
+					i,
+					Vector2(lineDirection.y, -lineDirection.x), # TODO: might be wrong...
+					closestPos,
+					sqrt(distanceSquared)
+				);
 			totalDistance += line.length();
-		
 		return bestInformation;
+
+	func _recalculate_information() -> void:
+		total_length = 0.0;
+		for i : int in points.size():
+			var p1 := points[i];
+			var p2 := points[(i + 1) % points.size()];
+			total_length += (p2 - p1).length();
+
+class RailPointInformation: 
+	var position : Vector2;
+	var normal : Vector2;
+	func _init(_position : Vector2, _normal : Vector2) -> void:
+		position = _position;
+		normal = _normal;
 
 class RailCloseInformation:
 	var rail_path : RailPath;
@@ -339,6 +360,8 @@ func register_tilemap(tileMap : TileMap) -> void:
 			path.points[i2] = p3;
 			path.points.remove_at(i);
 
+		path._recalculate_information();
+		
 		path.final = true;
 		path.index = rail_paths.size();
 		path.points.reverse();

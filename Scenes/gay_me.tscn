@@ -23,10 +23,12 @@ continuous_cd = 2
 script = ExtResource("1_4kn33")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1451303556]
+position = Vector2(0, -16)
 shape = SubResource("CircleShape2D_6v0g3")
 debug_color = Color(0.9305849, 3.0418634e-05, 0.658194, 0.41960785)
 
 [node name="Cat" type="Sprite2D" parent="Player" unique_id=2095059779]
+position = Vector2(0, -16)
 texture = ExtResource("1_04kjs")
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=944233491]
