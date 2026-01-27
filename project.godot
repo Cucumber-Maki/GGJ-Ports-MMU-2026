@@ -19,6 +19,15 @@ run/main_scene="uid://b24wrna5sg4kv"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+ImmediateGizmos2D="*uid://dy3uarox5dcqv"
+ImmediateGizmos3D="*uid://b1itedits8xid"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/immediate_gizmos/plugin.cfg")
+
 [input]
 
 PlayerLeft={
