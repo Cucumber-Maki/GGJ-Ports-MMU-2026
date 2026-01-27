@@ -25,6 +25,12 @@ ImmediateGizmos2D="*uid://dy3uarox5dcqv"
 ImmediateGizmos3D="*uid://b1itedits8xid"
 WorldRails="*uid://qbusoaet8ynj"
 
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/stretch/mode="canvas_items"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/immediate_gizmos/plugin.cfg")
