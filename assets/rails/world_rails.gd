@@ -40,9 +40,25 @@ class RailPath:
 		p2 = points[(pointIndex + 1) % points.size()];
 		var diff := (p2 - p1);
 		var dir := diff.normalized();
+		var normal := Vector2(dir.y, -dir.x);
+		var smoothNormal := normal;
+		
+		var percentage := distance / diff.length();
+		if (percentage < 0.5):
+			var p0 := points[posmod(pointIndex - 1, points.size())];
+			var lastNormal := (p1 - p0).normalized();
+			lastNormal = Vector2(lastNormal.y, -lastNormal.x);
+			smoothNormal = lastNormal.slerp(normal, remap(percentage, 0.0, 0.5, 0.5, 1.0));			
+		else:
+			var p3 := points[(pointIndex + 2) % points.size()];
+			var nextNormal := (p3 - p2).normalized();
+			nextNormal = Vector2(nextNormal.y, -nextNormal.x);
+			smoothNormal = normal.slerp(nextNormal, remap(percentage, 0.5, 1.0, 0.0, 0.5));		
+		
 		return RailPointInformation.new(
 			p1 + (dir * distance),
-			Vector2(dir.y, -dir.x)
+			normal, 
+			smoothNormal
 		);
 
 	func get_closest_point_information(pos : Vector2) -> RailCloseInformation:
@@ -86,9 +102,11 @@ class RailPath:
 class RailPointInformation: 
 	var position : Vector2;
 	var normal : Vector2;
-	func _init(_position : Vector2, _normal : Vector2) -> void:
+	var smooth_normal : Vector2;
+	func _init(_position : Vector2, _normal : Vector2, smoothNormal : Vector2) -> void:
 		position = _position;
 		normal = _normal;
+		smooth_normal = smoothNormal
 
 class RailCloseInformation:
 	var rail_path : RailPath;

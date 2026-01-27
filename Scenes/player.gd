@@ -15,12 +15,12 @@ func _physics_process(delta: float) -> void:
 		var lastAttachedInfo := attatched_rail.get_point_along_path(attatched_position);
 		momentum.y = 0.0;
 		momentum.x += movementInput * delta * movement_speed;
-		momentum.x += Vector2.RIGHT.dot(lastAttachedInfo.normal) * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
+		momentum.x += Vector2.RIGHT.dot(lastAttachedInfo.smooth_normal) * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
 		attatched_position += momentum.x * delta;
 		
 		var attachedInfo := attatched_rail.get_point_along_path(attatched_position);
 		position = attachedInfo.position;
-		rotation = (PI / 2) + attachedInfo.normal.angle();
+		rotation = (PI / 2) + attachedInfo.smooth_normal.angle();
 		
 		if (Input.is_action_just_pressed("PlayerJump")):
 			momentum.y = -500.0;
