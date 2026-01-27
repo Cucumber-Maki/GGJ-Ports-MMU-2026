@@ -1,4 +1,5 @@
 extends Node
+class_name WorldRailsInternal
 
 var rail_paths : Array[RailPath];
 var rail_paths_lookup : Dictionary;
