@@ -1,13 +1,93 @@
 [gd_scene format=3 uid="uid://6parrbhukhll"]
 
 [ext_resource type="Script" uid="uid://ctpw52hg6yhkl" path="res://assets/player/player.gd" id="1_h6syq"]
-[ext_resource type="Texture2D" uid="uid://huw6x8l1blml" path="res://Cat.png" id="2_v2miy"]
+[ext_resource type="Texture2D" uid="uid://b400qevvnqd88" path="res://assets/player/Cat Sheet.png" id="2_h6syq"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4kn33"]
 friction = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6v0g3"]
 radius = 16.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v2miy"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ouxva"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d5dr7"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toylo"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tb4ck"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kwvpd"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_op4fd"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m2mll"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v2miy")
+}],
+"loop": true,
+"name": &"Damage",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ouxva")
+}],
+"loop": true,
+"name": &"Descent",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d5dr7")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toylo")
+}],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tb4ck")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kwvpd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_op4fd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kwvpd")
+}],
+"loop": true,
+"name": &"Run",
+"speed": 5.0
+}]
 
 [node name="Player" type="RigidBody2D" unique_id=736865531]
 collision_layer = 2
@@ -22,7 +102,9 @@ script = ExtResource("1_h6syq")
 shape = SubResource("CircleShape2D_6v0g3")
 debug_color = Color(0.9305849, 3.0418634e-05, 0.658194, 0.41960785)
 
-[node name="Cat" type="Sprite2D" parent="." unique_id=1055556895]
-texture = ExtResource("2_v2miy")
+[node name="Cat" type="AnimatedSprite2D" parent="." unique_id=345007889]
+sprite_frames = SubResource("SpriteFrames_m2mll")
+animation = &"Idle"
+autoplay = "Idle"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1871343724]

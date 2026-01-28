@@ -54,6 +54,18 @@ func update_visuals() -> void:
 		
 	position = target_positon;
 	rotation = lerp_angle(rotation, target_rotation, 0.125);
+	var positivemomentumx=absf(movement_momentum.x)
+	if movement_momentum.y<0:
+		$Cat.play("Jump")
+	elif movement_momentum.y>0: 
+		$Cat.play("Descent")
+	elif positivemomentumx>32:
+		$Cat.play("Run",clamp(positivemomentumx/256,0,1.5))
+	else: 
+		$Cat.play("Idle")
+	if input_movement()!=0:
+		$Cat.flip_h= input_movement()==-1
+	
 	
 #######################################################################################################
 # Movement / air behaviours.
