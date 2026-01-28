@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bxbw7bjq02a4s"]
+
+[ext_resource type="Shader" uid="uid://buworvgppbmwl" path="res://assets/background/background.gdshader" id="1_dusi3"]
+[ext_resource type="Texture2D" uid="uid://dgq6tdybh4n4l" path="res://assets/background/FrontBuildings.png" id="2_xy76w"]
+[ext_resource type="Texture2D" uid="uid://cupax2bdo1dq5" path="res://assets/background/BackBuildings.png" id="3_hbarc"]
+[ext_resource type="Texture2D" uid="uid://5cdsdjgxeg3d" path="res://assets/background/Clouds.png" id="4_ao6k5"]
+[ext_resource type="Texture2D" uid="uid://bxlg5o6jej4k0" path="res://assets/background/Sky.png" id="5_jr3nv"]
+
+[resource]
+shader = ExtResource("1_dusi3")
+shader_parameter/backgroundtextures = Array[Texture2D]([ExtResource("2_xy76w"), ExtResource("3_hbarc"), ExtResource("4_ao6k5"), ExtResource("5_jr3nv")])
