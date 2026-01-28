@@ -1,67 +1,143 @@
 extends RigidBody2D
 
-@export var movement_speed := 700
+@export_group("Movement Properties", "movement_")
+@export var movement_speed : float = 600.0;
+@export_range(0.0, 1.0, 0.001) var movement_momentum_retention : float = 0.985
+var movement_momentum : Vector2 = Vector2.ZERO;
 
-var momentum : Vector2 = Vector2.ZERO
-var attatched_rail : WorldRailsInternal.RailPath = null
-var attatched_position : float = 0
+@export_group("Rail Properties", "rail_")
+@export_range(0.0, 180.0, 0.1, "radians_as_degrees") var rail_detatch_angle_threshold : float = deg_to_rad(70.0);
+@export var rail_detatch_force : float = 56.0;
+@export_range(0.0, 2.0) var rail_wall_bounce_retention : float = 0.45;
+@export_range(0.0, 2.0) var rail_wall_gravity_factor : float = 1.0;
+var rail_attatched_rail : WorldRailsInternal.RailPath = null
+var rail_attatched_position : float = 0
 
-@export var detatchThreshold : float = 70.0
+@export_group("Jump Properties", "jump_")
+@export var jump_impulse_force : float = 500.0;
+
+@export_group("Collision Properties", "collision_")
+@onready var collision_collider_size : float = ($CollisionShape2D.shape as CircleShape2D).radius;
+
+#######################################################################################################
+# Player inputs.
+
+func input_movement() -> float:
+	return Input.get_axis("PlayerLeft","PlayerRight");
+	
+func input_jump() -> bool:
+	return Input.is_action_just_pressed("PlayerJump");
+
+#######################################################################################################
+# Player behavour..
 
 func _physics_process(delta: float) -> void:
-	var movementInput := Input.get_axis("PlayerLeft","PlayerRight")
-	if attatched_rail!=null:
-		var lastMomentum := momentum;
-		var lastAttachedInfo := attatched_rail.get_point_along_path(attatched_position);
-		momentum.y = 0.0;
-		momentum.x += movementInput * delta * movement_speed;
-		momentum.x += Vector2.RIGHT.dot(lastAttachedInfo.smooth_normal) * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
-		attatched_position += momentum.x * delta;
-		
-		var attachedInfo := attatched_rail.get_point_along_path(attatched_position);
-		position = attachedInfo.position;
-		rotation = (PI / 2) + attachedInfo.smooth_normal.angle();
-		
-		if (Input.is_action_just_pressed("PlayerJump")):
-			momentum.y = -500.0;
-			detatch();
-		
-		#if (attachedInfo.normal.dot(Vector2.UP) <= 0.05 && 
-			#(sign(momentum.x) != sign(lastMomentum.x) || absf(momentum.x) <= 0.5)):
-			#detatch();
-		
-		var angle := rad_to_deg(lastAttachedInfo.normal.angle_to(attachedInfo.normal));
-		if ((momentum.x > 0.0 && angle >= detatchThreshold) || 
-			(momentum.x < 0.0 && angle <= -detatchThreshold)):
-			detatch();
-		elif ((momentum.x < 0.0 && angle >= detatchThreshold) || 
-			(momentum.x > 0.0 && angle <= -detatchThreshold)):
-			attatched_position -= momentum.x * delta;
-			momentum.x *= -0.45;
-			return _physics_process(0.0);
-		
-		if (attatched_rail == null):
-			momentum = momentum.rotated(-lastAttachedInfo.normal.angle_to(Vector2.UP))
-			return _physics_process(0.0);
+	if (rail_attatched_rail != null):
+		handle_rail(delta);	
 	else:
-		rotation = 0.0;
-		
-		momentum += Vector2.RIGHT * movementInput * delta * movement_speed;
-		momentum += Vector2.DOWN * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
-		
-		var closestRailInfo := WorldRails.get_closest_rail(position)
-		ImmediateGizmos2D.line_circle(closestRailInfo.closest_position, 30)
-		if (momentum.normalized().dot(position.direction_to(closestRailInfo.closest_position)) > 0.0 && 
-			closestRailInfo.closest_distance <= momentum.length() * delta):
-			attatched_rail = closestRailInfo.rail_path;
-			attatched_position = closestRailInfo.rail_path_distance;
-			momentum = momentum.rotated(closestRailInfo.rail_normal.angle_to(Vector2.UP));
-		else:
-			position += momentum * delta
+		handle_movement(delta);
 
-	momentum *= 0.99;
+	update_visuals();
+	movement_momentum *= movement_momentum_retention; # Drag.
+
+#######################################################################################################
+# Visual behaviour.
 	
-func detatch() -> void:
-	if (attatched_rail == null): return;
+func update_visuals() -> void:
+	var target_positon = position;
+	var target_rotation = 0.0;
 	
-	attatched_rail = null;
+	if (rail_attatched_rail != null): 
+		var attachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+		target_positon = attachedInfo.position + (attachedInfo.smooth_normal * collision_collider_size);
+		target_rotation = (PI / 2) + attachedInfo.smooth_normal.angle();
+		
+	position = target_positon;
+	rotation = lerp_angle(rotation, target_rotation, 0.125);
+	
+#######################################################################################################
+# Movement / air behaviours.
+	
+func handle_movement(delta : float) -> void:
+	movement_momentum += Vector2.RIGHT * input_movement() * delta * movement_speed;
+	movement_momentum += Vector2.DOWN * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
+	
+	var closestRailInfo := WorldRails.get_closest_rail(position);
+	ImmediateGizmos2D.line_circle(closestRailInfo.closest_position, 30)
+	if ((movement_momentum.normalized().dot(position.direction_to(closestRailInfo.closest_position)) > 0.0 && 
+		closestRailInfo.closest_distance <= (collision_collider_size + (movement_momentum.length() * delta)))):
+		attach_to_rail(closestRailInfo);
+		return;
+	
+	position += movement_momentum * delta
+	
+#######################################################################################################
+# Rail behaviours.
+	
+func handle_rail(delta : float) -> void:
+	var lastAttachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+	
+	# Movement (Internally on a 1D plane!).
+	movement_momentum.y = 0.0;
+	movement_momentum.x += input_movement() * delta * movement_speed;
+	movement_momentum.x += Vector2.RIGHT.dot(lastAttachedInfo.smooth_normal) * ProjectSettings.get_setting("physics/2d/default_gravity") * delta * rail_wall_gravity_factor;
+	
+	# Seek ahead.
+	var seekMovement := (movement_momentum.x * delta) + (signf(movement_momentum.x) * collision_collider_size);
+	if (WorldRails.draw_rails): seekMovement += signf(movement_momentum.x) * 200.0; # Debug
+	var seekInfo := rail_attatched_rail.seek_point_along_path(rail_attatched_position, seekMovement, rail_detatch_angle_threshold);
+	
+	# Debug:
+	if (WorldRails.draw_rails): 
+		if (seekInfo.detatch_index != -1):
+			var detatchInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position + seekInfo.detatch_distance);
+			ImmediateGizmos2D.line(detatchInfo.position, detatchInfo.position + detatchInfo.smooth_normal * 50.0, Color.RED);
+			ImmediateGizmos2D.line_circle(detatchInfo.position, 3.0, Color.RED);
+		if (seekInfo.wall_index != -1):
+			var wallInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position + seekInfo.wall_distance);
+			ImmediateGizmos2D.line(wallInfo.position, wallInfo.position + wallInfo.smooth_normal * 50.0, Color.GREEN);
+			ImmediateGizmos2D.line_circle(wallInfo.position, 3.0, Color.GREEN);
+	
+	# Detatch!
+	if (seekInfo.detatch_index != -1 && 
+		absf(seekInfo.detatch_distance) <= absf(seekInfo.wall_distance) &&
+		absf(seekInfo.detatch_distance) <= absf(movement_momentum.x * delta)):
+		detatch_from_rail(lastAttachedInfo);
+		position += movement_momentum * delta;
+		return;
+
+	# Wall bounce!
+	if (seekInfo.wall_index != -1  && 
+		absf(seekInfo.wall_distance) < absf(seekInfo.detatch_distance) &&
+		absf(seekInfo.wall_distance) <= (absf(movement_momentum.x * delta) + collision_collider_size)):
+		movement_momentum.x *= -rail_wall_bounce_retention;
+		
+	# Jump.
+	if (input_jump()):
+		movement_momentum.y = -jump_impulse_force;
+		detatch_from_rail(lastAttachedInfo);
+		position += movement_momentum * delta;
+		return;
+
+	# Move!
+	rail_attatched_position += movement_momentum.x * delta;
+	
+func attach_to_rail(railCloseInfo : WorldRailsInternal.RailCloseInformation) -> void:
+	if (railCloseInfo == null): 
+		return;
+	rail_attatched_rail = railCloseInfo.rail_path;
+	rail_attatched_position = railCloseInfo.rail_path_distance;
+	movement_momentum = movement_momentum.rotated(railCloseInfo.rail_normal.angle_to(Vector2.UP));
+	#
+	var railPointInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+	position = railPointInfo.position; 
+	
+func detatch_from_rail(railPointInfo : WorldRailsInternal.RailPointInformation) -> void:
+	if (rail_attatched_rail == null): 
+		return;
+	if (railPointInfo != null):
+		movement_momentum.y += -rail_detatch_force;
+		movement_momentum = movement_momentum.rotated(-railPointInfo.smooth_normal.angle_to(Vector2.UP))
+	rail_attatched_rail = null;
+
+#######################################################################################################

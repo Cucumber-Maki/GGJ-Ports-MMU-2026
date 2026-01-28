@@ -16,17 +16,16 @@ class RailPath:
 	
 	var total_length : float = 0.0;
 
-	func get_point_along_path(distance : float) -> RailPointInformation:
+	func get_point_along_path(distance : float, sharpAngle : float = PI) -> RailPointInformation:
 		distance = fposmod(distance, total_length);
 		
 		var pointIndex : int = 0;
 		var p1 := points[pointIndex];
-		var i2 := (pointIndex + 1) % points.size();
-		var p2 := points[i2];
+		var p2 := points[posmod(pointIndex + 1, points.size())];
 		var dist := (p2 - p1).length();
 		while (distance > 0.0 && pointIndex < points.size()):
 			p1 = points[pointIndex];
-			p2 = points[(pointIndex + 1) % points.size()];
+			p2 = points[posmod(pointIndex + 1, points.size())];
 			dist = (p2 - p1).length();
 			if (dist > distance):
 				break;
@@ -34,10 +33,10 @@ class RailPath:
 			pointIndex += 1;
 			
 		if (pointIndex >= points.size()):
-			return get_point_along_path(distance);
+			return get_point_along_path(distance, sharpAngle);
 			
 		p1 = points[pointIndex];
-		p2 = points[(pointIndex + 1) % points.size()];
+		p2 = points[posmod(pointIndex + 1, points.size())];
 		var diff := (p2 - p1);
 		var dir := diff.normalized();
 		var normal := Vector2(dir.y, -dir.x);
@@ -48,18 +47,116 @@ class RailPath:
 			var p0 := points[posmod(pointIndex - 1, points.size())];
 			var lastNormal := (p1 - p0).normalized();
 			lastNormal = Vector2(lastNormal.y, -lastNormal.x);
-			smoothNormal = lastNormal.slerp(normal, remap(percentage, 0.0, 0.5, 0.5, 1.0));			
+			if (absf(normal.angle_to(lastNormal)) < sharpAngle):
+				smoothNormal = lastNormal.slerp(normal, remap(percentage, 0.0, 0.5, 0.5, 1.0));			
 		else:
-			var p3 := points[(pointIndex + 2) % points.size()];
+			var p3 := points[posmod(pointIndex + 2, points.size())];
 			var nextNormal := (p3 - p2).normalized();
 			nextNormal = Vector2(nextNormal.y, -nextNormal.x);
-			smoothNormal = normal.slerp(nextNormal, remap(percentage, 0.5, 1.0, 0.0, 0.5));		
+			if (absf(normal.angle_to(nextNormal)) < sharpAngle):
+				smoothNormal = normal.slerp(nextNormal, remap(percentage, 0.5, 1.0, 0.0, 0.5));		
 		
 		return RailPointInformation.new(
 			p1 + (dir * distance),
 			normal, 
 			smoothNormal
 		);
+
+	func seek_point_along_path(start : float, targetChange : float, sharpAngle : float) -> RailSeekInformation:
+		var changeSign := signf(targetChange) as int;
+		start = fposmod(start, total_length);
+		targetChange = fposmod(start + targetChange, total_length);
+		
+		var result := RailSeekInformation.new();
+		if (changeSign == 0):
+			return result;
+		
+		var pointIndex : int = 0;
+		while (start > 0.0 && pointIndex < points.size()):
+			var p1 := points[pointIndex];
+			var p2 := points[posmod(pointIndex + 1, points.size())];
+			var dist := (p2 - p1).length();
+			if (dist > start):
+				break;
+			start -= dist;
+			pointIndex += 1;
+		pointIndex = posmod(pointIndex, points.size())
+
+		var targetChangeIndex : int = 0;
+		while (targetChange > 0.0 && targetChangeIndex < points.size()):
+			var p1 := points[targetChangeIndex];
+			var p2 := points[posmod(targetChangeIndex + 1, points.size())];
+			var dist := (p2 - p1).length();
+			if (dist > targetChange):
+				break;
+			targetChange -= dist;
+			targetChangeIndex += 1;
+		targetChangeIndex = posmod(targetChangeIndex, points.size());
+		
+		var distanceTravelled : float = 0.0;
+		while (pointIndex != targetChangeIndex):
+			var nextIndex := posmod(pointIndex + changeSign, points.size());
+			
+			# Bump.
+			var p1 := points[pointIndex];
+			var p2 := points[posmod(pointIndex + 1, points.size())];
+			var dist := (p2 - p1).length();
+			var normal := (p2 - p1).normalized();
+			normal = Vector2(normal.y, -normal.x);
+
+			var pn := points[posmod(nextIndex + maxi(changeSign, 0), points.size())];
+			var pnNormal : Vector2;
+			
+			# Set distanceTravelled to the start of pn.
+			if (changeSign == 1):
+				distanceTravelled += dist - start;
+				start = 0;
+				pnNormal = (pn - p2).normalized();
+			else: # changeSign == -1
+				distanceTravelled += start;
+				start = (p1 - pn).length();
+				pnNormal = (p1 - pn).normalized();
+				
+			# Perpendicularize.
+			pnNormal = Vector2(pnNormal.y, -pnNormal.x);
+			
+			if (WorldRails.draw_rails):
+				var debugPoint : Vector2 = p2 if changeSign == 1 else p1;
+				ImmediateGizmos2D.line(debugPoint, debugPoint + pnNormal * 20.0);
+				ImmediateGizmos2D.line(debugPoint, debugPoint + normal * 20.0);
+				var dangle := normal.angle_to(pnNormal);
+				ImmediateGizmos2D.line_arc(debugPoint, normal * 20.0, dangle);
+				ImmediateGizmos2D.line_arc(debugPoint, pnNormal * 20.0, -dangle);
+			
+			# Move accross.
+			pointIndex = nextIndex;
+			
+			# Check for sharp angle.
+			var angle := normal.angle_to(pnNormal);
+			if (result.detatch_index == -1 &&
+				((angle >= sharpAngle && changeSign == 1) || 
+				(angle <= -sharpAngle && changeSign == -1))):
+				result.detatch_distance = distanceTravelled * changeSign;
+				result.detatch_index = pointIndex;
+				if (WorldRails.draw_rails):
+					var debugPoint : Vector2 = p2 if changeSign == 1 else p1;
+					ImmediateGizmos2D.line_arc(debugPoint, normal * 20.0, angle, Color.RED);
+					ImmediateGizmos2D.line_arc(debugPoint, pnNormal * 20.0, -angle, Color.RED);
+			elif (result.wall_index == -1 && 
+				((angle >= sharpAngle && changeSign == -1) || 
+				(angle <= -sharpAngle && changeSign == 1))):
+				result.wall_distance = distanceTravelled * changeSign;
+				result.wall_index = pointIndex;
+				if (WorldRails.draw_rails):
+					var debugPoint : Vector2 = p2 if changeSign == 1 else p1;
+					ImmediateGizmos2D.line_arc(debugPoint, normal * 20.0, angle, Color.GREEN);
+					ImmediateGizmos2D.line_arc(debugPoint, pnNormal * 20.0, -angle, Color.GREEN);
+				
+			if (result.wall_index != -1 && result.detatch_distance != -1):
+				break;
+			
+		# Indices are now the same.
+		return result;
 
 	func get_closest_point_information(pos : Vector2) -> RailCloseInformation:
 		var bestDistanceSquared := INF;
@@ -108,6 +205,12 @@ class RailPointInformation:
 		normal = _normal;
 		smooth_normal = smoothNormal
 
+class RailSeekInformation: 
+	var detatch_distance : float = INF;
+	var detatch_index : int = -1;
+	var wall_distance : float = INF;
+	var wall_index : int = -1;
+		
 class RailCloseInformation:
 	var rail_path : RailPath;
 	var rail_path_distance : float;
@@ -215,7 +318,7 @@ class TileInfo:
 		var le = leftEdge;
 		while (le != rightEdge || le == rightEdge): 
 			var ci = le;
-			if (edges[ci].inset < c_tile_size):
+			if (edges[ci].inset > 0 && edges[ci].inset < c_tile_size):
 				var checkDirection : Vector2i = c_checks[ci][1];
 				var checkLeft : Vector2i = (c_checks[ci][0] * (c_tile_size));
 				var checkRight : Vector2i = checkLeft + (checkDirection * (c_tile_size));
