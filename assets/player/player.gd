@@ -16,6 +16,7 @@ var movement_momentum : Vector2 = Vector2.ZERO;
 @export_range(0.0, 2.0) var rail_wall_gravity_factor : float = 1.0;
 @export var rail_wall_jump_up_momentum_scale : float = 100.0;
 @export var rail_wall_jump_up_momentum_direction_factor : float = 3.0;
+@export var rail_wall_jump_down_jump_scale : float = 1.25;
 @export_range(0.0, 180.0, 0.1, "radians_as_degrees") var rail_ceiling_direction_swap_angle : float = TAU * 0.125;
 var rail_ceiling_direction_was_on_ceiling : bool = false;
 var rail_ceiling_direction_last_input_on_ceiling : bool = false;
@@ -244,6 +245,9 @@ func jump(normal : Vector2) -> void:
 			Vector2(jumpDirectionality * rail_wall_jump_up_momentum_direction_factor, jumpDirection.y).normalized(),
 			effectStrength
 		);
+	elif ((normal.dot(Vector2.RIGHT) > 0.0 && movement_momentum.x > 0.0) ||
+		(normal.dot(Vector2.RIGHT) < 0.0 && movement_momentum.x < 0.0)):
+		jumpForce = lerpf(jumpForce, jumpForce * rail_wall_jump_down_jump_scale, effectStrength);
 			
 	movement_momentum.y += jumpDirection.y * jumpForce;
 	movement_momentum.x += jumpDirection.x * jumpForce * effectStrength * 0.5;
