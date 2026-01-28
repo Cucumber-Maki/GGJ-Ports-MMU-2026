@@ -97,6 +97,10 @@ freeze = true
 freeze_mode = 1
 continuous_cd = 2
 script = ExtResource("1_h6syq")
+rail_wall_gravity_factor = 0.32
+jump_impulse_force = 350.0
+jump_impulse_momentum_max = 200.0
+jump_release_strength = 0.5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1334136805]
 shape = SubResource("CircleShape2D_6v0g3")

@@ -3,18 +3,35 @@ extends RigidBody2D
 @export_group("Movement Properties", "movement_")
 @export var movement_speed : float = 600.0;
 @export_range(0.0, 1.0, 0.001) var movement_momentum_retention : float = 0.985
+@export_range(0.0, 2.0) var movement_air_factor : float = 0.7;
+
 var movement_momentum : Vector2 = Vector2.ZERO;
 
 @export_group("Rail Properties", "rail_")
 @export_range(0.0, 180.0, 0.1, "radians_as_degrees") var rail_detatch_angle_threshold : float = deg_to_rad(70.0);
 @export var rail_detatch_force : float = 56.0;
+@export var rail_detatch_speed_threshold : float = 240.0;
+@export var rail_detatch_bounce_retention : float = 0.1;
 @export_range(0.0, 2.0) var rail_wall_bounce_retention : float = 0.45;
 @export_range(0.0, 2.0) var rail_wall_gravity_factor : float = 1.0;
+@export var rail_wall_jump_up_momentum_scale : float = 100.0;
+@export var rail_wall_jump_up_momentum_direction_factor : float = 3.0;
+@export_range(0.0, 180.0, 0.1, "radians_as_degrees") var rail_ceiling_direction_swap_angle : float = TAU * 0.125;
+var rail_ceiling_direction_was_on_ceiling : bool = false;
+var rail_ceiling_direction_last_input_on_ceiling : bool = false;
+var rail_ceiling_direction_last_input : float = false;
 var rail_attatched_rail : WorldRailsInternal.RailPath = null
 var rail_attatched_position : float = 0
 
 @export_group("Jump Properties", "jump_")
 @export var jump_impulse_force : float = 500.0;
+@export_range(0.0, 2.0) var jump_impulse_momentum_factor : float = 0.6;
+@export var jump_impulse_momentum_max : float = 500.0;
+@export_range(0.0, 1.0) var jump_release_strength : float = 0.4;
+var jump_release_possible : bool = false;
+@export var jump_coyote_time : float = 0.1;
+var jump_coyote_direction : Vector2 = Vector2.UP;
+var jump_coyote_remaining_time : float = 0.0;
 
 @export_group("Collision Properties", "collision_")
 @onready var collision_collider_size : float = ($CollisionShape2D.shape as CircleShape2D).radius;
@@ -27,11 +44,16 @@ func input_movement() -> float:
 	
 func input_jump() -> bool:
 	return Input.is_action_just_pressed("PlayerJump");
+func input_jump_release() -> bool:
+	return Input.is_action_just_released("PlayerJump");
 
 #######################################################################################################
 # Player behavour..
 
 func _physics_process(delta: float) -> void:
+	if (jump_coyote_remaining_time > 0.0):
+		jump_coyote_remaining_time -= delta;
+	
 	if (rail_attatched_rail != null):
 		handle_rail(delta);	
 	else:
@@ -54,24 +76,52 @@ func update_visuals() -> void:
 		
 	position = target_positon;
 	rotation = lerp_angle(rotation, target_rotation, 0.125);
-	var positivemomentumx=absf(movement_momentum.x)
-	if movement_momentum.y<0:
-		$Cat.play("Jump")
-	elif movement_momentum.y>0: 
-		$Cat.play("Descent")
-	elif positivemomentumx>32:
-		$Cat.play("Run",clamp(positivemomentumx/256,0,1.5))
-	else: 
-		$Cat.play("Idle")
-	if input_movement()!=0:
-		$Cat.flip_h= input_movement()==-1
 	
+	var positivemomentumx=absf(movement_momentum.x)
+
+	# Rail animations
+	if (rail_attatched_rail != null):
+		if positivemomentumx>32:
+			$Cat.play("Run",clamp(positivemomentumx/256,0,1.5))
+		else: 
+			$Cat.play("Idle")
+	else:
+		# Air animations
+		if movement_momentum.y<0:
+			$Cat.play("Jump")
+		elif movement_momentum.y>0: 
+			$Cat.play("Descent")
+	
+	var movementInput := input_movement();
+	if (rail_ceiling_direction_last_input_on_ceiling):
+		movementInput *= -1;
+	if movementInput!=0:
+		$Cat.flip_h= movementInput==-1
+	
+	if (WorldRails.draw_rails):
+		ImmediateGizmos2D.line_circle(position, collision_collider_size, Color.MEDIUM_VIOLET_RED);
 	
 #######################################################################################################
 # Movement / air behaviours.
 	
 func handle_movement(delta : float) -> void:
-	movement_momentum += Vector2.RIGHT * input_movement() * delta * movement_speed;
+	if (jump_coyote_remaining_time > 0.0 && input_jump()):
+		jump(jump_coyote_direction);
+	
+	if (jump_release_possible && movement_momentum.y > 0.0):
+		jump_release_possible = false;
+	if (jump_release_possible && input_jump_release()):
+		movement_momentum.y *= 1.0 - jump_release_strength;
+		jump_release_possible = false;
+		
+		
+	var movementInput := input_movement();
+	if (rail_ceiling_direction_last_input != movementInput):
+		rail_ceiling_direction_last_input_on_ceiling = false;
+	if (rail_ceiling_direction_last_input_on_ceiling):
+		movementInput *= -1;
+
+	movement_momentum += Vector2.RIGHT * movementInput * delta * movement_speed * movement_air_factor;
 	movement_momentum += Vector2.DOWN * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
 	
 	var closestRailInfo := WorldRails.get_closest_rail(position);
@@ -89,11 +139,23 @@ func handle_movement(delta : float) -> void:
 # Rail behaviours.
 	
 func handle_rail(delta : float) -> void:
-	var lastAttachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+	jump_release_possible = false;
 	
+	var lastAttachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+	var isOnCeiling := acos(lastAttachedInfo.normal.dot(Vector2.DOWN)) < rail_ceiling_direction_swap_angle;
+	var movementInput := input_movement();
+	
+	# Swap controls?
+	if (rail_ceiling_direction_last_input != movementInput):
+		rail_ceiling_direction_last_input_on_ceiling = isOnCeiling;
+	rail_ceiling_direction_last_input = movementInput;
+	rail_ceiling_direction_was_on_ceiling = isOnCeiling;
+	if (rail_ceiling_direction_last_input_on_ceiling):
+		movementInput *= -1;
+		
 	# Movement (Internally on a 1D plane!).
 	movement_momentum.y = 0.0;
-	movement_momentum.x += input_movement() * delta * movement_speed;
+	movement_momentum.x += movementInput * delta * movement_speed;
 	movement_momentum.x += Vector2.RIGHT.dot(lastAttachedInfo.smooth_normal) * ProjectSettings.get_setting("physics/2d/default_gravity") * delta * rail_wall_gravity_factor;
 	
 	# Seek ahead.
@@ -105,8 +167,9 @@ func handle_rail(delta : float) -> void:
 	if (WorldRails.draw_rails): 
 		if (seekInfo.detatch_index != -1):
 			var detatchInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position + seekInfo.detatch_distance);
-			ImmediateGizmos2D.line(detatchInfo.position, detatchInfo.position + detatchInfo.smooth_normal * 50.0, Color.RED);
-			ImmediateGizmos2D.line_circle(detatchInfo.position, 3.0, Color.RED);
+			var color := Color.YELLOW if (absf(movement_momentum.x) <= rail_detatch_speed_threshold) else Color.RED;
+			ImmediateGizmos2D.line(detatchInfo.position, detatchInfo.position + detatchInfo.smooth_normal * 50.0, color);
+			ImmediateGizmos2D.line_circle(detatchInfo.position, 3.0, color);
 		if (seekInfo.wall_index != -1):
 			var wallInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position + seekInfo.wall_distance);
 			ImmediateGizmos2D.line(wallInfo.position, wallInfo.position + wallInfo.smooth_normal * 50.0, Color.GREEN);
@@ -116,9 +179,14 @@ func handle_rail(delta : float) -> void:
 	if (seekInfo.detatch_index != -1 && 
 		absf(seekInfo.detatch_distance) <= absf(seekInfo.wall_distance) &&
 		absf(seekInfo.detatch_distance) <= absf(movement_momentum.x * delta)):
-		detatch_from_rail(lastAttachedInfo);
-		position += movement_momentum * delta;
-		return;
+		if (absf(movement_momentum.x) <= rail_detatch_speed_threshold):
+			#movement_momentum.y = -100.0;
+			movement_momentum.x *= -rail_detatch_bounce_retention;
+		else:
+			detatch_from_rail(lastAttachedInfo);
+			position += movement_momentum * delta;
+			jump_coyote_remaining_time = jump_coyote_time;
+			return;
 
 	# Wall bounce!
 	if (seekInfo.wall_index != -1  && 
@@ -128,14 +196,14 @@ func handle_rail(delta : float) -> void:
 		
 	# Jump.
 	if (input_jump()):
-		movement_momentum.y = -jump_impulse_force;
+		jump(lastAttachedInfo.normal);
 		detatch_from_rail(lastAttachedInfo);
 		position += movement_momentum * delta;
 		return;
 
 	# Move!
 	rail_attatched_position += movement_momentum.x * delta;
-	
+
 func attach_to_rail(railCloseInfo : WorldRailsInternal.RailCloseInformation) -> void:
 	if (railCloseInfo == null): 
 		return;
@@ -145,13 +213,41 @@ func attach_to_rail(railCloseInfo : WorldRailsInternal.RailCloseInformation) -> 
 	#
 	var railPointInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
 	position = railPointInfo.position; 
-	
+	#
+	var isOnCeiling := acos(railPointInfo.normal.dot(Vector2.DOWN)) < rail_ceiling_direction_swap_angle;
+	if (rail_ceiling_direction_was_on_ceiling != isOnCeiling):
+		rail_ceiling_direction_last_input_on_ceiling = !rail_ceiling_direction_last_input_on_ceiling;
+
 func detatch_from_rail(railPointInfo : WorldRailsInternal.RailPointInformation) -> void:
 	if (rail_attatched_rail == null): 
 		return;
+	jump_coyote_remaining_time = 0.0;
 	if (railPointInfo != null):
 		movement_momentum.y += -rail_detatch_force;
 		movement_momentum = movement_momentum.rotated(-railPointInfo.smooth_normal.angle_to(Vector2.UP))
+		jump_coyote_direction = railPointInfo.normal;
 	rail_attatched_rail = null;
+
+#######################################################################################################
+# Jump....
+
+func jump(normal : Vector2) -> void:
+	var jumpForce := (jump_impulse_force + minf(absf(movement_momentum.x) * jump_impulse_momentum_factor, jump_impulse_momentum_max));
+	var jumpDirection := Vector2.UP;
+	var effectStrength := absf(normal.dot(Vector2.RIGHT));
+	
+	# Up wall.
+	if ((normal.dot(Vector2.RIGHT) > 0.0 && movement_momentum.x < 0.0) ||
+		(normal.dot(Vector2.RIGHT) < 0.0 && movement_momentum.x > 0.0)):
+		var jumpDirectionality := clampf(movement_momentum.x / rail_wall_jump_up_momentum_scale, -1.0, 1.0);	
+		jumpDirection = jumpDirection.slerp(
+			Vector2(jumpDirectionality * rail_wall_jump_up_momentum_direction_factor, jumpDirection.y).normalized(),
+			effectStrength
+		);
+			
+	movement_momentum.y += jumpDirection.y * jumpForce;
+	movement_momentum.x += jumpDirection.x * jumpForce * effectStrength * 0.5;
+	jump_release_possible = true;
+	jump_coyote_remaining_time = 0.0;
 
 #######################################################################################################
