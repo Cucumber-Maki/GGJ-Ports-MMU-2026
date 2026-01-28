@@ -75,11 +75,13 @@ func handle_movement(delta : float) -> void:
 	movement_momentum += Vector2.DOWN * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
 	
 	var closestRailInfo := WorldRails.get_closest_rail(position);
-	ImmediateGizmos2D.line_circle(closestRailInfo.closest_position, 30)
-	if ((movement_momentum.normalized().dot(position.direction_to(closestRailInfo.closest_position)) > 0.0 && 
-		closestRailInfo.closest_distance <= (collision_collider_size + (movement_momentum.length() * delta)))):
-		attach_to_rail(closestRailInfo);
-		return;
+	if (closestRailInfo != null):
+		if (WorldRails.draw_rails):
+			ImmediateGizmos2D.line_circle(closestRailInfo.closest_position, 30)
+		if ((movement_momentum.normalized().dot(position.direction_to(closestRailInfo.closest_position)) > 0.0 && 
+			closestRailInfo.closest_distance <= (collision_collider_size + (movement_momentum.length() * delta)))):
+			attach_to_rail(closestRailInfo);
+			return;
 	
 	position += movement_momentum * delta
 	

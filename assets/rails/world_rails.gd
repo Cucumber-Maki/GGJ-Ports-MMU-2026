@@ -248,7 +248,7 @@ class TileInfo:
 		var right : int = 0;
 		var inset : int = 0;
 		
-		func is_edge() -> bool:
+		func _is_edge() -> bool:
 			return left < (c_tile_size - right);
 
 	func _init(tileId : Vector2i, tileset : TileSet) -> void:
@@ -285,9 +285,12 @@ class TileInfo:
 				if (hasPixel): break;
 				edges[i].inset += 1;
 	
-	func get_points(index : int, hasTop : bool) -> Array[Vector2]:
-		var leftEdge : int = index;
-		var rightEdge : int = index;
+	func has_edge(index : int, tileRotation : int) -> bool:
+		return edges[posmod(index - tileRotation, c_checks.size())]._is_edge();
+	
+	func get_points(index : int, hasTop : bool, tileRotation : int) -> Array[Vector2]:
+		var leftEdge : int = posmod(index - tileRotation, c_checks.size());
+		var rightEdge : int = posmod(index - tileRotation, c_checks.size());
 		
 		if (edges[leftEdge].left <= 0 && hasTop):
 			return [];
@@ -296,7 +299,7 @@ class TileInfo:
 		var leftMarched := false;
 		if (edges[leftEdge].left > 0):
 			leftMarched = true;
-			if (edges[leftEdge].is_edge()):
+			if (edges[leftEdge]._is_edge()):
 				leftPoints.append(get_edge_point_left(leftEdge));
 			leftEdge = (leftEdge - 1) % edges.size();
 		if (!leftMarched && !hasTop):
@@ -308,7 +311,7 @@ class TileInfo:
 		var rightMarched := false;
 		if (edges[rightEdge].right > 0):
 			rightMarched = true;
-			if (edges[rightEdge].is_edge()):
+			if (edges[rightEdge]._is_edge()):
 				rightPoints.append(get_edge_point_right(rightEdge));
 			rightEdge = (rightEdge + 1) % edges.size();
 		if (!rightMarched && !hasTop):
@@ -346,6 +349,10 @@ class TileInfo:
 			middlePoints.reverse();
 			points.append(middlePoints[0]);
 		
+		var midPoint := Vector2(c_tile_size, c_tile_size) / 2.0;
+		for i : int in points.size():
+			points[i] = (points[i] - midPoint).rotated((PI / 2) * tileRotation) + midPoint;
+		
 		return points;
 		
 	func get_edge_point_left(index : int) -> Vector2i:
@@ -372,7 +379,25 @@ func _get_tile_info(tileId : Vector2i, tileSet : TileSet) -> TileInfo:
 	if (!tile_shapes.has(tileId)): 
 		tile_shapes.set(tileId, TileInfo.new(tileId, tileSet));
 	return tile_shapes.get(tileId);
-func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int = 0) -> RailPath:
+func _get_tile_rotation(tileMap : TileMap, cellCoord : Vector2i) -> int:
+	var tileAlternative := tileMap.get_cell_alternative_tile(target_layer, cellCoord);
+	var transpose := (tileAlternative & TileSetAtlasSource.TRANSFORM_TRANSPOSE) > 0;
+	var flip_h := (tileAlternative & TileSetAtlasSource.TRANSFORM_FLIP_H) > 0;
+	var flip_v := (tileAlternative & TileSetAtlasSource.TRANSFORM_FLIP_V) > 0;
+	
+	if (!transpose && !flip_h && !flip_v):
+		return 0;
+	if (transpose && flip_h && !flip_v):
+		return 1;
+	if (!transpose && flip_h && flip_v):
+		return 2;
+	if (transpose && !flip_h && flip_v):
+		return 3;
+		
+	assert(false, "heck.");
+	return -1;
+	
+func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int = 0, recursed : bool = false) -> RailPath:
 	const checks : Array[Vector2i] = [ 
 		Vector2i(0, -1),
 		Vector2i(1, 0),
@@ -381,10 +406,15 @@ func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int
 	];
 	checkDirection = checkDirection % checks.size();
 	
-	var tileId = tileMap.get_cell_atlas_coords(target_layer, cellCoord);
+	var tileId := tileMap.get_cell_atlas_coords(target_layer, cellCoord);
 	if (tileId.x == -1 || tileId.y == -1):
 		return null;
-		
+	
+	var tileInfo = _get_tile_info(tileId, tileMap.tile_set);
+	var tileRotation := _get_tile_rotation(tileMap, cellCoord);
+	if (recursed && !tileInfo.has_edge(checkDirection - 1, tileRotation)):
+		return null;
+	
 	var railKey := Vector4i(cellCoord.x, cellCoord.y, checkDirection, tileMap.get_instance_id());
 	if (rail_paths_lookup.has(railKey)):
 		var index : int = rail_paths_lookup.get(railKey);
@@ -404,7 +434,6 @@ func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int
 	
 	rail_paths_lookup.set(railKey, rail_paths.size());
 
-	var tileInfo = _get_tile_info(tileId, tileMap.tile_set);
 
 	var railData : RailPath = null;
 	var points : Array[Vector2] = [];
@@ -412,12 +441,12 @@ func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int
 		var checkIndex := (checkIndexBefore + checkDirection) % checks.size();
 		var checkCell := cellCoord + checks[checkIndex];
 		
-		if (!tileInfo.edges[checkIndex].is_edge()):
+		if (!tileInfo.has_edge(checkIndex, tileRotation)):
 			continue;
 		
-		railData = _recurse_rail(tileMap, checkCell, checkIndex - 1);
+		railData = _recurse_rail(tileMap, checkCell, checkIndex - 1, true);
 		if (railData == null): 
-			for point in tileInfo.get_points(checkIndex, false):
+			for point in tileInfo.get_points(checkIndex, false, tileRotation):
 				points.append(cellPos + point);
 			continue;
 			
@@ -425,7 +454,7 @@ func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int
 			rail_paths_lookup.set(railKey, railData.index);
 			return railData;
 			
-		for point in tileInfo.get_points(checkIndex, true):
+		for point in tileInfo.get_points(checkIndex, true, tileRotation):
 			points.append(cellPos + point);
 			
 		points.reverse();
@@ -492,7 +521,8 @@ func get_closest_rail(pos : Vector2) -> RailCloseInformation:
 	var bestRailInformation : RailCloseInformation = null;
 	for railPath : RailPath in rail_paths:
 		var railInformation := railPath.get_closest_point_information(pos);
-		if (bestRailInformation != null && bestRailInformation.closest_distance <= railInformation.closest_distance):
+		if (railInformation == null || 
+			(bestRailInformation != null && bestRailInformation.closest_distance <= railInformation.closest_distance)):
 			continue;
 		bestRailInformation = railInformation;
 	return bestRailInformation;
