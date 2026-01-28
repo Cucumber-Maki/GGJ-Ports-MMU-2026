@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://6parrbhukhll"]
+
+[ext_resource type="Script" uid="uid://ctpw52hg6yhkl" path="res://assets/player/player.gd" id="1_h6syq"]
+[ext_resource type="Texture2D" uid="uid://huw6x8l1blml" path="res://Cat.png" id="2_v2miy"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4kn33"]
+friction = 0.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6v0g3"]
+radius = 16.0
+
+[node name="Player" type="RigidBody2D" unique_id=736865531]
+collision_layer = 2
+physics_material_override = SubResource("PhysicsMaterial_4kn33")
+gravity_scale = 0.0
+freeze = true
+freeze_mode = 1
+continuous_cd = 2
+script = ExtResource("1_h6syq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1334136805]
+position = Vector2(0, -16)
+shape = SubResource("CircleShape2D_6v0g3")
+debug_color = Color(0.9305849, 3.0418634e-05, 0.658194, 0.41960785)
+
+[node name="Cat" type="Sprite2D" parent="." unique_id=1055556895]
+position = Vector2(0, -16)
+texture = ExtResource("2_v2miy")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1871343724]

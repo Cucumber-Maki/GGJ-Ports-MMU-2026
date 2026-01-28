@@ -1,38 +1,12 @@
 [gd_scene format=3 uid="uid://b24wrna5sg4kv"]
 
-[ext_resource type="Texture2D" uid="uid://huw6x8l1blml" path="res://Cat.png" id="1_04kjs"]
-[ext_resource type="Script" uid="uid://ctpw52hg6yhkl" path="res://Scenes/player.gd" id="1_4kn33"]
+[ext_resource type="PackedScene" uid="uid://6parrbhukhll" path="res://assets/player/player.tscn" id="1_ouhd7"]
 [ext_resource type="TileSet" uid="uid://dkmt423pcp657" path="res://new_tile_set.tres" id="3_ouhd7"]
 [ext_resource type="Script" uid="uid://ct3nlob868bhv" path="res://assets/rails/register_rails.gd" id="6_euy6d"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4kn33"]
-friction = 0.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_6v0g3"]
-radius = 16.0
-
 [node name="Gay-me" type="Node2D" unique_id=1477126536]
 
-[node name="Player" type="RigidBody2D" parent="." unique_id=1245758383]
-collision_layer = 2
-physics_material_override = SubResource("PhysicsMaterial_4kn33")
-gravity_scale = 0.0
-freeze = true
-freeze_mode = 1
-continuous_cd = 2
-script = ExtResource("1_4kn33")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1451303556]
-position = Vector2(0, -16)
-shape = SubResource("CircleShape2D_6v0g3")
-debug_color = Color(0.9305849, 3.0418634e-05, 0.658194, 0.41960785)
-
-[node name="Cat" type="Sprite2D" parent="Player" unique_id=2095059779]
-position = Vector2(0, -16)
-texture = ExtResource("1_04kjs")
-
-[node name="Camera2D" type="Camera2D" parent="Player" unique_id=944233491]
-zoom = Vector2(3, 3)
+[node name="Player" parent="." unique_id=736865531 instance=ExtResource("1_ouhd7")]
 
 [node name="TileMap" type="TileMap" parent="." unique_id=1328514932]
 tile_set = ExtResource("3_ouhd7")
