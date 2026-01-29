@@ -149,8 +149,11 @@ func update_visuals() -> void:
 
 	# Rail animations
 	const flashTime := 0.15;
-	var flash := remap(max(0.0, (damage_stun_timer + flashTime) - damage_stun_time), 0.0, flashTime, 0.0, 1.0);
-	($Cat.material as ShaderMaterial).set_shader_parameter("flash", sin(flash * PI));
+	var flash := sin(remap(maxf(0.0, (damage_stun_timer + flashTime) - damage_stun_time), 0.0, flashTime, 0.0, 1.0) * PI);
+	if (damage_invulnerability_timer > 0.0):
+		flash += sin((damage_invulnerability_time - damage_invulnerability_timer) * 16.0) * 0.25;
+	
+	($Cat.material as ShaderMaterial).set_shader_parameter("flash", clampf(flash, 0.0, 1.0));
 	if (damage_stun_timer > 0.0):
 		$Cat.play("Damage");
 	elif (rail_attatched_rail != null):
