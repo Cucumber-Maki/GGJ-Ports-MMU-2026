@@ -8,7 +8,9 @@
 
 [node name="Gay-me" type="Node2D" unique_id=1477126536]
 
-[node name="Background" parent="." unique_id=762805178 instance=ExtResource("1_01hr8")]
+[node name="Background" parent="." unique_id=762805178 node_paths=PackedStringArray("player") instance=ExtResource("1_01hr8")]
+visible = true
+player = NodePath("../Player")
 
 [node name="Player" parent="." unique_id=736865531 instance=ExtResource("1_ouhd7")]
 position = Vector2(245, -1)
