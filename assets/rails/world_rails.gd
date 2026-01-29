@@ -286,49 +286,50 @@ class TileInfo:
 				edges[i].inset += 1;
 	
 	func has_edge(index : int, tileRotation : int) -> bool:
-		return edges[posmod(index - tileRotation, c_checks.size())]._is_edge();
+		var flipped := tileRotation >= 4;
+		tileRotation = posmod(tileRotation, 4);
+		index = posmod(index - tileRotation, c_checks.size());
+		if (flipped):
+			index = posmod(-index, c_checks.size());
+		return edges[index]._is_edge();
 	
 	func get_points(index : int, hasTop : bool, tileRotation : int) -> Array[Vector2]:
+		var tileRotationRaw := tileRotation;
+		tileRotation = posmod(tileRotation, 4);
 		var leftEdge : int = posmod(index - tileRotation, c_checks.size());
 		var rightEdge : int = posmod(index - tileRotation, c_checks.size());
 		
-		if (edges[leftEdge].left <= 0 && hasTop):
+		if (get_edge_left(leftEdge, tileRotationRaw) <= 0 && hasTop):
 			return [];
 		
 		var leftPoints : Array[Vector2] = [];
 		var leftMarched := false;
-		if (edges[leftEdge].left > 0):
+		if (get_edge_left(leftEdge, tileRotationRaw) > 0):
 			leftMarched = true;
-			if (edges[leftEdge]._is_edge()):
-				leftPoints.append(get_edge_point_left(leftEdge));
+			if (has_edge(leftEdge, tileRotationRaw)):
+				leftPoints.append(get_edge_point_left(leftEdge, tileRotationRaw));
 			leftEdge = (leftEdge - 1) % edges.size();
 		if (!leftMarched && !hasTop):
-			leftPoints.append(get_edge_point_left(leftEdge));
+			leftPoints.append(get_edge_point_left(leftEdge, tileRotationRaw));
 		leftPoints.reverse();
 		
 			
 		var rightPoints : Array[Vector2] = []
 		var rightMarched := false;
-		if (edges[rightEdge].right > 0):
+		if (get_edge_right(rightEdge, tileRotationRaw) > 0):
 			rightMarched = true;
-			if (edges[rightEdge]._is_edge()):
-				rightPoints.append(get_edge_point_right(rightEdge));
+			if (has_edge(rightEdge, tileRotationRaw)):
+				rightPoints.append(get_edge_point_right(rightEdge, tileRotationRaw));
 			rightEdge = (rightEdge + 1) % edges.size();
 		if (!rightMarched && !hasTop):
-			rightPoints.append(get_edge_point_right(rightEdge));
+			rightPoints.append(get_edge_point_right(rightEdge, tileRotationRaw));
 			
 		var middlePoints : Array[Vector2] = []
 		var le = leftEdge;
 		while (le != rightEdge || le == rightEdge): 
-			var ci = le;
+			var ci = get_safe_index(le, tileRotationRaw);
 			if (edges[ci].inset > 0 && edges[ci].inset < c_tile_size):
-				var checkDirection : Vector2i = c_checks[ci][1];
-				var checkLeft : Vector2i = (c_checks[ci][0] * (c_tile_size));
-				var checkRight : Vector2i = checkLeft + (checkDirection * (c_tile_size));
-				@warning_ignore("integer_division")
-				var checkMiddle : Vector2i = (checkLeft + checkRight) / 2;
-				var checkMiddleDirection : Vector2i = c_checks[(ci + 1) % c_checks.size()][1];
-				var middlePoint := checkMiddle + (checkMiddleDirection * edges[ci].inset);
+				var middlePoint := get_edge_point_middle(ci, tileRotationRaw);
 				@warning_ignore("integer_division")
 				if (edges[ci].inset > c_tile_size / 2):
 					middlePoints.append(middlePoint);
@@ -355,15 +356,59 @@ class TileInfo:
 		
 		return points;
 		
-	func get_edge_point_left(index : int) -> Vector2i:
+	func get_safe_index(index : int, tileRotation : int) -> int:
+		var flipped := tileRotation >= 4;
+		if (flipped):
+			return get_safe_index(-index, posmod(tileRotation, 4));
+		return posmod(index, c_checks.size());
+	func get_edge_left(index : int, tileRotation : int) -> int:
+		var flipped := tileRotation >= 4;
+		if (flipped):
+			return get_edge_right(-index, posmod(tileRotation, 4));
+		return edges[get_safe_index(index, tileRotation)].left;
+	func get_edge_right(index : int, tileRotation : int) -> int:
+		var flipped := tileRotation >= 4;
+		if (flipped):
+			return get_edge_left(-index, posmod(tileRotation, 4));
+		return edges[get_safe_index(index, tileRotation)].right;
+	func get_edge_inset(index : int, tileRotation : int) -> int:
+		return edges[get_safe_index(index, tileRotation)].inset;
+	func get_edge_point_left(index : int, tileRotation : int) -> Vector2i:
+		var flipped := tileRotation >= 4;
+		if (flipped):
+			var point := get_edge_point_right(-index,  posmod(tileRotation, 4));
+			point.x = c_tile_size - point.x;
+			return point;
+		index = posmod(index, c_checks.size());
 		var checkDirection : Vector2i = c_checks[index][1];
 		var checkLeft : Vector2i = (c_checks[index][0] * (c_tile_size));
 		return checkLeft + (checkDirection * edges[index].left);
-	func get_edge_point_right(index : int) -> Vector2i:
+	func get_edge_point_right(index : int, tileRotation : int) -> Vector2i:
+		var flipped := tileRotation >= 4;
+		if (flipped):
+			var point := get_edge_point_left(-index,  posmod(tileRotation, 4));
+			point.x = c_tile_size - point.x;
+			return point;
+		index = posmod(index, c_checks.size());
 		var checkDirection : Vector2i = c_checks[index][1];
 		var checkLeft : Vector2i = (c_checks[index][0] * (c_tile_size));
 		var checkRight : Vector2i = checkLeft + (checkDirection * (c_tile_size));
 		return checkRight - (checkDirection * edges[index].right);
+	func get_edge_point_middle(index : int, tileRotation : int) -> Vector2i:
+		var flipped := tileRotation >= 4;
+		if (flipped):
+			var point := get_edge_point_middle(-index,  posmod(tileRotation, 4));
+			point.x = c_tile_size - point.x;
+			return point;
+		index = posmod(index, c_checks.size());
+		var checkDirection : Vector2i = c_checks[index][1];
+		var checkLeft : Vector2i = (c_checks[index][0] * (c_tile_size));
+		var checkRight : Vector2i = checkLeft + (checkDirection * (c_tile_size));
+		@warning_ignore("integer_division")
+		var checkMiddle : Vector2i = (checkLeft + checkRight) / 2;
+		var checkMiddleDirection : Vector2i = c_checks[(index + 1) % c_checks.size()][1];
+		var middlePoint := checkMiddle + (checkMiddleDirection * edges[index].inset);
+		return middlePoint;
 
 var draw_rails : bool = false;
 
@@ -394,6 +439,15 @@ func _get_tile_rotation(tileMap : TileMap, cellCoord : Vector2i) -> int:
 	if (transpose && !flip_h && flip_v):
 		return 3;
 		
+	if (!transpose && flip_h && !flip_v):
+		return 4;
+	if (transpose && flip_h && flip_v):
+		return 5;
+	if (!transpose && !flip_h && flip_v):
+		return 6;
+	if (transpose && !flip_h && !flip_v):
+		return 7;
+		
 	assert(false, "heck.");
 	return -1;
 	
@@ -414,7 +468,7 @@ func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int
 	var tileRotation := _get_tile_rotation(tileMap, cellCoord);
 	if (recursed && !tileInfo.has_edge(checkDirection - 1, tileRotation)):
 		return null;
-	
+		
 	var railKey := Vector4i(cellCoord.x, cellCoord.y, checkDirection, tileMap.get_instance_id());
 	if (rail_paths_lookup.has(railKey)):
 		var index : int = rail_paths_lookup.get(railKey);

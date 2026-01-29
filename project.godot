@@ -35,6 +35,17 @@ window/stretch/mode="canvas_items"
 
 enabled=PackedStringArray("res://addons/immediate_gizmos/plugin.cfg")
 
+[file_customization]
+
+folder_colors={
+"res://Scenes/": "green",
+"res://assets/": "gray",
+"res://assets/background/": "purple",
+"res://assets/player/": "red",
+"res://assets/rails/": "teal",
+"res://assets/tileset/": "yellow"
+}
+
 [input]
 
 PlayerLeft={

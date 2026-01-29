@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://lg1wrti0dv6m"]
+
+[ext_resource type="Material" uid="uid://bxbw7bjq02a4s" path="res://assets/background/background.tres" id="1_uakm4"]
+[ext_resource type="Texture2D" uid="uid://bxlg5o6jej4k0" path="res://assets/background/Sky.png" id="2_ukmyv"]
+[ext_resource type="Script" uid="uid://ckn37frbknkrn" path="res://assets/background/background.gd" id="3_366sk"]
+
+[node name="Background" type="Sprite2D" unique_id=762805178 node_paths=PackedStringArray("player")]
+visible = false
+material = ExtResource("1_uakm4")
+scale = Vector2(2.8, 2.8)
+texture = ExtResource("2_ukmyv")
+script = ExtResource("3_366sk")
+player = NodePath("")
