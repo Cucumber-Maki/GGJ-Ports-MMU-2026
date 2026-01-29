@@ -1,4 +1,5 @@
 extends TileMap
 
 func _ready() -> void:
-	WorldRails.register_tilemap(self);
+	for sourceMask : WorldRailsInternal.SourceMask in Player._spectrum_source_masks:
+		WorldRails.register_tilemap(self, sourceMask);

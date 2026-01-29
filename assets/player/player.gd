@@ -23,7 +23,7 @@ var movement_momentum : Vector2 = Vector2.ZERO;
 var rail_ceiling_direction_was_on_ceiling : bool = false;
 var rail_ceiling_direction_last_input_on_ceiling : bool = false;
 var rail_ceiling_direction_last_input : float = false;
-var rail_attatched_rail : WorldRailsInternal.RailPath = null
+var rail_attatched_rail : RailGroup.RailPath = null
 var rail_attatched_position : float = 0
 
 @export_group("Jump Properties", "jump_")
@@ -70,6 +70,15 @@ func spectrum_can_interact(color : Spectrum) -> bool:
 static func bind_on_spectrum_color_change(callback : Callable) -> void:
 	callback.call(s_instance._spectrum_color);
 	s_instance.on_spectrum_color_change.connect(callback);
+	
+static var _spectrum_source_masks : Array[WorldRailsInternal.SourceMask] = [
+	WorldRailsInternal.SourceMask.new([0]),
+	WorldRailsInternal.SourceMask.new([0, 1]),
+	WorldRailsInternal.SourceMask.new([0, 2]),
+	WorldRailsInternal.SourceMask.new([0, 3]),
+];
+func get_source_mask() -> WorldRailsInternal.SourceMask:
+	return _spectrum_source_masks[_spectrum_color as int];
 
 #######################################################################################################
 # Player inputs.
@@ -164,7 +173,7 @@ func handle_movement(delta : float) -> void:
 	movement_momentum += Vector2.RIGHT * movementInput * delta * movement_speed * movement_air_factor;
 	movement_momentum += Vector2.DOWN * ProjectSettings.get_setting("physics/2d/default_gravity") * delta;
 	
-	var closestRailInfo := WorldRails.get_closest_rail(position);
+	var closestRailInfo := WorldRails.get_closest_rail(position, get_source_mask());
 	if (closestRailInfo != null):
 		if (WorldRails.draw_rails):
 			ImmediateGizmos2D.line_circle(closestRailInfo.closest_position, 30)
@@ -246,7 +255,7 @@ func handle_rail(delta : float) -> void:
 	# Move!
 	rail_attatched_position += movement_momentum.x * delta;
 
-func attach_to_rail(railCloseInfo : WorldRailsInternal.RailCloseInformation) -> void:
+func attach_to_rail(railCloseInfo : RailGroup.RailCloseInformation) -> void:
 	if (railCloseInfo == null): 
 		return;
 	rail_attatched_rail = railCloseInfo.rail_path;
@@ -260,7 +269,7 @@ func attach_to_rail(railCloseInfo : WorldRailsInternal.RailCloseInformation) -> 
 	if (rail_ceiling_direction_was_on_ceiling != isOnCeiling):
 		rail_ceiling_direction_last_input_on_ceiling = !rail_ceiling_direction_last_input_on_ceiling;
 
-func detatch_from_rail(railPointInfo : WorldRailsInternal.RailPointInformation) -> void:
+func detatch_from_rail(railPointInfo : RailGroup.RailPointInformation) -> void:
 	if (rail_attatched_rail == null): 
 		return;
 	jump_coyote_remaining_time = 0.0;
