@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://coxg2rjuq6u01" path="res://assets/objects/spring/spring.gd" id="1_5jb5k"]
 [ext_resource type="Texture2D" uid="uid://b1dgoxnbotgg5" path="res://assets/objects/spring/spring.png" id="2_4rtcv"]
+[ext_resource type="Material" uid="uid://diw86t7gkhls0" path="res://assets/objects/spring/spring.tres" id="2_ockrn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
 size = Vector2(28, 26)
@@ -70,11 +71,10 @@ shape = SubResource("RectangleShape2D_qaeri")
 debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=704558908]
+material = ExtResource("2_ockrn")
 sprite_frames = SubResource("SpriteFrames_2sftf")
-animation = &"Bounce"
+animation = &"Idle"
 autoplay = "Idle"
-frame = 2
-frame_progress = 1.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]

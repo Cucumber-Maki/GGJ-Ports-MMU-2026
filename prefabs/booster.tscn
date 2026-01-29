@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bu4sq7s5rsbj8" path="res://assets/objects/booster/booster.gd" id="1_ntwft"]
 [ext_resource type="Texture2D" uid="uid://7f2pbp5nvagt" path="res://assets/objects/booster/booster.png" id="1_whobl"]
+[ext_resource type="Material" uid="uid://mjeritvpy34p" path="res://assets/objects/booster/booster.tres" id="2_tyarw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
 size = Vector2(28, 26)
@@ -65,6 +66,7 @@ shape = SubResource("RectangleShape2D_qaeri")
 debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1366207942]
+material = ExtResource("2_tyarw")
 sprite_frames = SubResource("SpriteFrames_tdriq")
 animation = &"Active"
 autoplay = "Active"

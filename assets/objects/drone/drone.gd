@@ -8,4 +8,5 @@ func _on_body_entered(body: Node2D) -> void:
 	if (player == null): return;
 	
 	player.set_momentum(Vector2.UP.rotated(rotation) * force, true, Vector2(horizontal, 0.0));
+	player.set_color(spectrum_color);
 	explode();

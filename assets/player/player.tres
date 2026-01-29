@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://btcfxy3i1whxc"]
+
+[ext_resource type="Shader" uid="uid://bmm7movqbc53f" path="res://assets/objects/spectrum.gdshader" id="1_shdnh"]
+[ext_resource type="Texture2D" uid="uid://b1rgv0h564gqa" path="res://assets/player/CatWhite Sheet.png" id="2_frovk"]
+
+[resource]
+shader = ExtResource("1_shdnh")
+shader_parameter/u_spectrumColor = Color(0.7254902, 0.7411765, 0.7411765, 1)
+shader_parameter/u_glow = 1.5
+shader_parameter/u_white = ExtResource("2_frovk")

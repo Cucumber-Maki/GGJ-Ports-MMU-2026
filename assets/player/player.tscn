@@ -1,13 +1,18 @@
 [gd_scene format=3 uid="uid://6parrbhukhll"]
 
 [ext_resource type="Script" uid="uid://ctpw52hg6yhkl" path="res://assets/player/player.gd" id="1_h6syq"]
-[ext_resource type="Texture2D" uid="uid://b400qevvnqd88" path="res://assets/player/Cat Sheet.png" id="2_h6syq"]
+[ext_resource type="Texture2D" uid="uid://chvighblm3ofe" path="res://assets/player/Cat Sheet.png" id="2_h6syq"]
+[ext_resource type="Material" uid="uid://btcfxy3i1whxc" path="res://assets/player/player.tres" id="2_v2miy"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4kn33"]
 friction = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6v0g3"]
 radius = 16.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h6syq"]
+atlas = ExtResource("2_h6syq")
+region = Rect2(224, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v2miy"]
 atlas = ExtResource("2_h6syq")
@@ -41,9 +46,17 @@ region = Rect2(96, 0, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_v2miy")
+"texture": SubResource("AtlasTexture_h6syq")
 }],
 "loop": true,
+"name": &"Air_Neutral",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v2miy")
+}],
+"loop": false,
 "name": &"Damage",
 "speed": 5.0
 }, {
@@ -107,8 +120,9 @@ shape = SubResource("CircleShape2D_6v0g3")
 debug_color = Color(0.9305849, 3.0418634e-05, 0.658194, 0.41960785)
 
 [node name="Cat" type="AnimatedSprite2D" parent="." unique_id=345007889]
+material = ExtResource("2_v2miy")
 sprite_frames = SubResource("SpriteFrames_m2mll")
-animation = &"Idle"
+animation = &"Air_Neutral"
 autoplay = "Idle"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1871343724]

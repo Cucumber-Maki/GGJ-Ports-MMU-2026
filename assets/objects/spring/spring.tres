@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://diw86t7gkhls0"]
+
+[ext_resource type="Shader" uid="uid://bmm7movqbc53f" path="res://assets/objects/spectrum.gdshader" id="1_qqqma"]
+[ext_resource type="Texture2D" uid="uid://cstcm3yiaxirc" path="res://assets/objects/spring/spring_white.png" id="2_wihug"]
+
+[resource]
+shader = ExtResource("1_qqqma")
+shader_parameter/u_spectrumColor = Color(1, 1, 1, 1)
+shader_parameter/u_glow = 1.5
+shader_parameter/u_white = ExtResource("2_wihug")

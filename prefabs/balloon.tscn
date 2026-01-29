@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bqtwjseio17su" path="res://assets/objects/balloon/balloon.png" id="1_do4bh"]
 [ext_resource type="Script" uid="uid://drjdkiu3s325a" path="res://assets/objects/balloon/balloon.gd" id="1_hi5ay"]
+[ext_resource type="Material" uid="uid://ddofvlfe5xygn" path="res://assets/objects/balloon/balloon.tres" id="1_n23tm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
 size = Vector2(26, 32)
@@ -22,6 +23,7 @@ animations = [{
 }]
 
 [node name="Balloon" type="Area2D" unique_id=1386221435]
+material = ExtResource("1_n23tm")
 collision_layer = 8
 collision_mask = 2
 script = ExtResource("1_hi5ay")
@@ -31,6 +33,7 @@ shape = SubResource("RectangleShape2D_qaeri")
 debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=266181171]
+material = ExtResource("1_n23tm")
 sprite_frames = SubResource("SpriteFrames_n23tm")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

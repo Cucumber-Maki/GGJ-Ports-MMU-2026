@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cgvx5dwqhsg1n"]
+
+[ext_resource type="Shader" uid="uid://bmm7movqbc53f" path="res://assets/objects/spectrum.gdshader" id="1_jbh4v"]
+[ext_resource type="Texture2D" uid="uid://dw7boochdwmy0" path="res://assets/objects/drone/drone_white.png" id="2_g4xc8"]
+
+[resource]
+shader = ExtResource("1_jbh4v")
+shader_parameter/u_spectrumColor = Color(0.7254902, 0.7411765, 0.7411765, 1)
+shader_parameter/u_glow = 1.5
+shader_parameter/u_white = ExtResource("2_g4xc8")

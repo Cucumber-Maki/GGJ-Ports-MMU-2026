@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cusx3ect16abm"]
+
+[ext_resource type="Shader" uid="uid://bmm7movqbc53f" path="res://assets/objects/spectrum.gdshader" id="1_3xrsw"]
+[ext_resource type="Texture2D" uid="uid://dj17ohx6fwoj0" path="res://assets/objects/entity/explode_white.png" id="2_uaqe5"]
+
+[resource]
+shader = ExtResource("1_3xrsw")
+shader_parameter/u_spectrumColor = Color(0.7254902, 0.7411765, 0.7411765, 1)
+shader_parameter/u_glow = 1.5
+shader_parameter/u_white = ExtResource("2_uaqe5")

@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://ddofvlfe5xygn"]
+
+[ext_resource type="Shader" uid="uid://bmm7movqbc53f" path="res://assets/objects/spectrum.gdshader" id="1_bffmx"]
+[ext_resource type="Texture2D" uid="uid://bvafgvp7oixuo" path="res://assets/objects/balloon/balloon_white.png" id="2_7u0rj"]
+
+[resource]
+shader = ExtResource("1_bffmx")
+shader_parameter/u_spectrumColor = Color(0.7254902, 0.7411765, 0.7411765, 1)
+shader_parameter/u_glow = 1.5
+shader_parameter/u_white = ExtResource("2_7u0rj")

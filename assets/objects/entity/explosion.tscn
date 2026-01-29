@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dm02worappf8s"]
 
 [ext_resource type="Texture2D" uid="uid://bq508hdrv4eau" path="res://assets/objects/entity/explode.png" id="1_3rrfx"]
+[ext_resource type="Material" uid="uid://cusx3ect16abm" path="res://assets/objects/entity/explosion.tres" id="1_w63w0"]
 [ext_resource type="Script" uid="uid://2w4r5o7pfr1f" path="res://assets/objects/entity/explosion.gd" id="2_we8bg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_we8bg"]
@@ -47,6 +48,7 @@ animations = [{
 }]
 
 [node name="Explosion" type="AnimatedSprite2D" unique_id=1840794000]
+material = ExtResource("1_w63w0")
 sprite_frames = SubResource("SpriteFrames_aav73")
 animation = &"Explosion"
 autoplay = "Explosion"

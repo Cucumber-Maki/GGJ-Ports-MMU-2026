@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ct0e1itn0pb1l" path="res://assets/objects/drone/drone.gd" id="1_12ve3"]
 [ext_resource type="Texture2D" uid="uid://cdpd6225avqbe" path="res://assets/objects/drone/drone.png" id="2_fy04j"]
+[ext_resource type="Material" uid="uid://cgvx5dwqhsg1n" path="res://assets/objects/drone/drone.tres" id="2_t5og5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
 size = Vector2(21, 22)
@@ -40,6 +41,7 @@ shape = SubResource("RectangleShape2D_qaeri")
 debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=818956688]
+material = ExtResource("2_t5og5")
 sprite_frames = SubResource("SpriteFrames_01hr8")
 animation = &"Drone"
 autoplay = "Drone"

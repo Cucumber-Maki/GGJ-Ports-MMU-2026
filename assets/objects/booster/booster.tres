@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://mjeritvpy34p"]
+
+[ext_resource type="Shader" uid="uid://bmm7movqbc53f" path="res://assets/objects/spectrum.gdshader" id="1_avfq8"]
+[ext_resource type="Texture2D" uid="uid://dmx4t5mev8aai" path="res://assets/objects/booster/booster_white.png" id="2_i5ss6"]
+
+[resource]
+shader = ExtResource("1_avfq8")
+shader_parameter/u_spectrumColor = Color(0.7254902, 0.7411765, 0.7411765, 1)
+shader_parameter/u_glow = 1.5
+shader_parameter/u_white = ExtResource("2_i5ss6")

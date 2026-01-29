@@ -1,5 +1,6 @@
 extends RigidBody2D
 class_name Player;
+static var s_instance : Player = null;
 
 @export_group("Movement Properties", "movement_")
 @export var movement_speed : float = 600.0;
@@ -38,6 +39,38 @@ var jump_coyote_remaining_time : float = 0.0;
 @export_group("Collision Properties", "collision_")
 @onready var collision_collider_size : float = ($CollisionShape2D.shape as CircleShape2D).radius;
 
+enum Spectrum {
+	White, 
+	Red, Green, Blue,
+};
+var _spectrum_color = Spectrum.White;
+signal on_spectrum_color_change(color : Spectrum);
+
+static func get_spectrum_color(color : Spectrum) -> Color:
+	match (color):
+		Spectrum.Red: return Color("ff3a51");
+		Spectrum.Green: return Color("6ccd34");
+		Spectrum.Blue: return Color("0081ff");
+	return Color("b9bdbd");
+
+func set_color(color : Spectrum, force : bool = false) -> bool:
+	if (color == Spectrum.White && !force): return false;
+	if (_spectrum_color == color): return false;
+	_spectrum_color = color;
+	($Cat.material as ShaderMaterial).set_shader_parameter("u_spectrumColor", get_spectrum_color(_spectrum_color));
+	on_spectrum_color_change.emit(_spectrum_color);
+	return true;
+	
+func get_color() -> Color:
+	return get_spectrum_color(_spectrum_color);
+
+func spectrum_can_interact(color : Spectrum) -> bool:
+	return color == Spectrum.White || color == _spectrum_color;
+
+static func bind_on_spectrum_color_change(callback : Callable) -> void:
+	callback.call(s_instance._spectrum_color);
+	s_instance.on_spectrum_color_change.connect(callback);
+
 #######################################################################################################
 # Player inputs.
 
@@ -51,6 +84,9 @@ func input_jump_release() -> bool:
 
 #######################################################################################################
 # Player behavour..
+
+func _ready() -> void:
+	s_instance = self;
 
 func _physics_process(delta: float) -> void:
 	if (jump_coyote_remaining_time > 0.0):
@@ -89,10 +125,12 @@ func update_visuals() -> void:
 			$Cat.play("Idle")
 	else:
 		# Air animations
-		if movement_momentum.y<0:
+		if movement_momentum.y < -50.0:
 			$Cat.play("Jump")
-		elif movement_momentum.y>0: 
+		elif movement_momentum.y > 50.0: 
 			$Cat.play("Descent")
+		else:
+			$Cat.play("Air_Neutral")
 	
 	var movementInput := input_movement();
 	if (rail_ceiling_direction_last_input_on_ceiling):
