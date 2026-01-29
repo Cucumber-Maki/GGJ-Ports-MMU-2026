@@ -257,6 +257,11 @@ func jump(normal : Vector2) -> void:
 	jump_release_possible = true;
 	jump_coyote_remaining_time = 0.0;
 
+func get_momentum() -> Vector2:
+	if (rail_attatched_rail == null): return movement_momentum;
+	var attachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+	return movement_momentum.rotated(-attachedInfo.smooth_normal.angle_to(Vector2.UP));
+	
 func set_momentum(momentum : Vector2, detatch : bool = false, mask : Vector2 = Vector2.ZERO):
 	if (rail_attatched_rail != null):
 		var attachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);

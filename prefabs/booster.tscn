@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://iif4jib11ub7"]
+
+[ext_resource type="Script" uid="uid://bu4sq7s5rsbj8" path="res://assets/objects/booster/booster.gd" id="1_ntwft"]
+[ext_resource type="Texture2D" uid="uid://7f2pbp5nvagt" path="res://assets/objects/booster/booster.png" id="1_whobl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
+size = Vector2(28, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ntwft"]
+atlas = ExtResource("1_whobl")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tyarw"]
+atlas = ExtResource("1_whobl")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m5d6j"]
+atlas = ExtResource("1_whobl")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nfudq"]
+atlas = ExtResource("1_whobl")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_whobl"]
+atlas = ExtResource("1_whobl")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tdriq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ntwft")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tyarw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m5d6j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nfudq")
+}],
+"loop": true,
+"name": &"Active",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_whobl")
+}],
+"loop": true,
+"name": &"Disabled",
+"speed": 5.0
+}]
+
+[node name="Booster" type="Area2D" unique_id=63798719]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_ntwft")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=315810698]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_qaeri")
+debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1366207942]
+sprite_frames = SubResource("SpriteFrames_tdriq")
+animation = &"Active"
+autoplay = "Active"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

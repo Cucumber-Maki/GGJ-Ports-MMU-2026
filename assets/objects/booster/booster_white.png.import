@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dmx4t5mev8aai"
-path="res://.godot/imported/SpeedBoosterWhite.png-c2afdbfaad290becf0a85842f9145e3b.ctex"
+path="res://.godot/imported/booster_white.png-1e50c8d97bd99848ad2206caedfacd8e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/Whites/SpeedBoosterWhite.png"
-dest_files=["res://.godot/imported/SpeedBoosterWhite.png-c2afdbfaad290becf0a85842f9145e3b.ctex"]
+source_file="res://assets/objects/booster/booster_white.png"
+dest_files=["res://.godot/imported/booster_white.png-1e50c8d97bd99848ad2206caedfacd8e.ctex"]
 
 [params]
 
