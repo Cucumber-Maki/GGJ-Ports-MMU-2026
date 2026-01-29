@@ -5,7 +5,7 @@
 [ext_resource type="Material" uid="uid://mjeritvpy34p" path="res://assets/objects/booster/booster.tres" id="2_tyarw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
-size = Vector2(28, 26)
+size = Vector2(28, 9)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ntwft"]
 atlas = ExtResource("1_whobl")
@@ -61,7 +61,7 @@ collision_mask = 2
 script = ExtResource("1_ntwft")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=315810698]
-position = Vector2(0, 3)
+position = Vector2(0, 11.5)
 shape = SubResource("RectangleShape2D_qaeri")
 debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
 
