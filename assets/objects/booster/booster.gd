@@ -8,7 +8,7 @@ extends Area2D
 func _ready() -> void:
 	Entity.cache_spectrum_material($Sprite, spectrum_color);
 	Player.bind_on_spectrum_color_change(func (color):
-		$Sprite.play("Active" if (color == spectrum_color) else "Disabled");
+		$Sprite.play("Active" if (Player.s_instance.spectrum_can_interact(spectrum_color)) else "Disabled");
 	);
 	
 func _on_body_entered(body: Node2D) -> void:
