@@ -9,3 +9,4 @@
 [resource]
 shader = ExtResource("1_dusi3")
 shader_parameter/backgroundtextures = Array[Texture2D]([ExtResource("2_xy76w"), ExtResource("3_hbarc"), ExtResource("4_ao6k5"), ExtResource("5_jr3nv")])
+shader_parameter/offsetposition = Vector2(0, 0)

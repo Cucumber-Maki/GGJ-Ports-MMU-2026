@@ -9,6 +9,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	position=player.position
-	(material as ShaderMaterial).set_shader_parameter("offsetposition",Vector2.RIGHT*position/10000)
-	
-	pass
+	var backgroundPos : Vector2 = position;
+	backgroundPos.x /= 10000;
+	backgroundPos.y /= 10000;
+	(material as ShaderMaterial).set_shader_parameter("offsetposition",backgroundPos);
