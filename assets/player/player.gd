@@ -39,6 +39,13 @@ var jump_coyote_remaining_time : float = 0.0;
 @export_group("Collision Properties", "collision_")
 @onready var collision_collider_size : float = ($CollisionShape2D.shape as CircleShape2D).radius;
 
+@export_group("Damage Properties", "damage_")
+@export var damage_invulnerability_time : float = 2.5;
+@export var damage_stun_time : float = 0.5;
+var damage_invulnerability_timer : float = 0.0;
+var damage_stun_timer : float = 0.0;
+
+
 enum Spectrum {
 	White, 
 	Red, Green, Blue,
@@ -100,6 +107,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if (jump_coyote_remaining_time > 0.0):
 		jump_coyote_remaining_time -= delta;
+	if (damage_invulnerability_timer > 0.0): 
+		damage_invulnerability_timer -= delta;
+	if (damage_stun_timer > 0.0): 
+		damage_stun_timer -= delta;
 	
 	if (rail_attatched_rail != null):
 		handle_rail(delta);	
@@ -127,7 +138,12 @@ func update_visuals() -> void:
 	var positivemomentumx=absf(movement_momentum.x)
 
 	# Rail animations
-	if (rail_attatched_rail != null):
+	const flashTime := 0.15;
+	var flash := remap(max(0.0, (damage_stun_timer + flashTime) - damage_stun_time), 0.0, flashTime, 0.0, 1.0);
+	($Cat.material as ShaderMaterial).set_shader_parameter("flash", sin(flash * PI));
+	if (damage_stun_timer > 0.0):
+		$Cat.play("Damage");
+	elif (rail_attatched_rail != null):
 		if positivemomentumx>32:
 			$Cat.play("Run",clamp(positivemomentumx/256,0,1.5))
 		else: 
@@ -322,4 +338,12 @@ func set_momentum(momentum : Vector2, detatch : bool = false, mask : Vector2 = V
 func add_momentum(momentum : Vector2):
 	set_momentum(momentum, false, Vector2.ONE);
 
+#######################################################################################################
+
+func take_damage() -> void:
+	if (damage_invulnerability_timer > 0.0): return;
+	set_color(Spectrum.White, true);
+	damage_invulnerability_timer = damage_invulnerability_time;
+	damage_stun_timer = damage_stun_time;
+	
 #######################################################################################################

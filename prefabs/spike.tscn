@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://chy6l1po0hjue"]
+
+[ext_resource type="Script" uid="uid://6u2kqn8owrtn" path="res://assets/objects/spike/spike.gd" id="1_i4d64"]
+[ext_resource type="Texture2D" uid="uid://cy80q0t228ajr" path="res://assets/objects/spike/Spikes.png" id="2_q0d15"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
+size = Vector2(28, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sa0ea"]
+atlas = ExtResource("2_q0d15")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5hllg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sa0ea")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Spike" type="Area2D" unique_id=2025934274]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_i4d64")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1315733413]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_qaeri")
+debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=554901956]
+sprite_frames = SubResource("SpriteFrames_5hllg")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
