@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bc83rj5trq57t"]
+
+[ext_resource type="Texture2D" uid="uid://bqtwjseio17su" path="res://assets/objects/balloon/balloon.png" id="1_do4bh"]
+[ext_resource type="Script" uid="uid://drjdkiu3s325a" path="res://assets/objects/balloon/balloon.gd" id="1_hi5ay"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
+size = Vector2(26, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hi5ay"]
+atlas = ExtResource("1_do4bh")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_n23tm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hi5ay")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Balloon" type="Area2D" unique_id=1386221435]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_hi5ay")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=178752381]
+shape = SubResource("RectangleShape2D_qaeri")
+debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=266181171]
+sprite_frames = SubResource("SpriteFrames_n23tm")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://df1gq6wc3mhv3"]
+
+[ext_resource type="Script" uid="uid://ct0e1itn0pb1l" path="res://assets/objects/drone/drone.gd" id="1_12ve3"]
+[ext_resource type="Texture2D" uid="uid://cdpd6225avqbe" path="res://assets/objects/drone/drone.png" id="2_fy04j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
+size = Vector2(21, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qaeri"]
+atlas = ExtResource("2_fy04j")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xcqew"]
+atlas = ExtResource("2_fy04j")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_01hr8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qaeri")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xcqew")
+}],
+"loop": true,
+"name": &"Drone",
+"speed": 5.0
+}]
+
+[node name="Drone" type="Area2D" unique_id=495390233]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_12ve3")
+force = 600.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=334438135]
+position = Vector2(0.5, -1)
+shape = SubResource("RectangleShape2D_qaeri")
+debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=818956688]
+sprite_frames = SubResource("SpriteFrames_01hr8")
+animation = &"Drone"
+frame_progress = 0.00549403
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

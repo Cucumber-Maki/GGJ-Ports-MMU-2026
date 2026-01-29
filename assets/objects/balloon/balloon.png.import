@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dw7boochdwmy0"
-path="res://.godot/imported/EnemyDroneWhite.png-224e3ea7db78ec578576a0afebea7772.ctex"
+uid="uid://bqtwjseio17su"
+path="res://.godot/imported/balloon.png-a2ab282dfaba090c50b052d2af6e0fc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/Whites/EnemyDroneWhite.png"
-dest_files=["res://.godot/imported/EnemyDroneWhite.png-224e3ea7db78ec578576a0afebea7772.ctex"]
+source_file="res://assets/objects/balloon/balloon.png"
+dest_files=["res://.godot/imported/balloon.png-a2ab282dfaba090c50b052d2af6e0fc2.ctex"]
 
 [params]
 

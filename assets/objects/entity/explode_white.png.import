@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bq508hdrv4eau"
-path="res://.godot/imported/Explode.png-90b57aeb4ccaf0d51394885956c5b275.ctex"
+uid="uid://dj17ohx6fwoj0"
+path="res://.godot/imported/explode_white.png-293623a11c38b70fef8dbf94041fe139.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/Explode.png"
-dest_files=["res://.godot/imported/Explode.png-90b57aeb4ccaf0d51394885956c5b275.ctex"]
+source_file="res://assets/objects/entity/explode_white.png"
+dest_files=["res://.godot/imported/explode_white.png-293623a11c38b70fef8dbf94041fe139.ctex"]
 
 [params]
 

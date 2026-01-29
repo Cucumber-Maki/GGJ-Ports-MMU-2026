@@ -257,20 +257,16 @@ func jump(normal : Vector2) -> void:
 	jump_release_possible = true;
 	jump_coyote_remaining_time = 0.0;
 
-func set_momentum(momentum : Vector2, detatch : bool = false):
-	if (rail_attatched_rail != null):
-		if (detatch):
-			var attachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
-			detatch_from_rail(attachedInfo);
-		else:
-			movement_momentum = momentum;
-			return;
-	movement_momentum = momentum;
-	
-func add_momentum(momentum : Vector2):
+func set_momentum(momentum : Vector2, detatch : bool = false, mask : Vector2 = Vector2.ZERO):
 	if (rail_attatched_rail != null):
 		var attachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
-		momentum = momentum.rotated(attachedInfo.smooth_normal.angle_to(Vector2.UP));
-	movement_momentum += momentum;
+		if (detatch):
+			detatch_from_rail(attachedInfo);
+		else:
+			momentum = momentum.rotated(attachedInfo.smooth_normal.angle_to(Vector2.UP));
+	movement_momentum = momentum + (movement_momentum * mask);
+	
+func add_momentum(momentum : Vector2):
+	set_momentum(momentum, false, Vector2.ONE);
 
 #######################################################################################################

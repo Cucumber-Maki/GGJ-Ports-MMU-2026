@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqtwjseio17su"
-path="res://.godot/imported/Balloon.png-426149e9a836c45bf315a28e3d50720c.ctex"
+uid="uid://dw7boochdwmy0"
+path="res://.godot/imported/drone_white.png-6c1299470818283e529b0a452c96b15a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/Balloon.png"
-dest_files=["res://.godot/imported/Balloon.png-426149e9a836c45bf315a28e3d50720c.ctex"]
+source_file="res://assets/objects/drone/drone_white.png"
+dest_files=["res://.godot/imported/drone_white.png-6c1299470818283e529b0a452c96b15a.ctex"]
 
 [params]
 
