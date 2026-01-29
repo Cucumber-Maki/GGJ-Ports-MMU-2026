@@ -166,6 +166,8 @@ func handle_rail(delta : float) -> void:
 	
 	# Debug:
 	if (WorldRails.draw_rails): 
+		for point in rail_attatched_rail.points:
+			ImmediateGizmos2D.line_circle(point + Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)), 2.5, Color.GRAY);
 		if (seekInfo.detatch_index != -1):
 			var detatchInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position + seekInfo.detatch_distance);
 			var color := Color.YELLOW if (absf(movement_momentum.x) <= rail_detatch_speed_threshold) else Color.RED;

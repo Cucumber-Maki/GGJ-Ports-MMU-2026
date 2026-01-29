@@ -432,26 +432,33 @@ func _recurse_rail(tileMap : TileMap, cellCoord : Vector2i, checkDirection : int
 	];
 	assert(checks.size() == edges.size());
 	
-	rail_paths_lookup.set(railKey, rail_paths.size());
-
-
 	var railData : RailPath = null;
 	var points : Array[Vector2] = [];
 	for checkIndexBefore : int in checks.size(): 
-		var checkIndex := (checkIndexBefore + checkDirection) % checks.size();
+		var checkIndex := posmod(checkIndexBefore + checkDirection, checks.size());
 		var checkCell := cellCoord + checks[checkIndex];
 		
-		if (!tileInfo.has_edge(checkIndex, tileRotation)):
-			continue;
-		
-		railData = _recurse_rail(tileMap, checkCell, checkIndex - 1, true);
-		if (railData == null): 
-			for point in tileInfo.get_points(checkIndex, false, tileRotation):
-				points.append(cellPos + point);
-			continue;
+		railKey.z = checkIndex;
+		if (rail_paths_lookup.has(railKey)):
+			var index : int = rail_paths_lookup.get(railKey);
+			if (index < 0 || index >= rail_paths.size()):
+				railData = RailPath.new();
+			else:
+				railData = rail_paths[index];
+			
+		if (railData == null):
+			rail_paths_lookup.set(railKey, rail_paths.size());
+			
+			if (!tileInfo.has_edge(checkIndex, tileRotation)):
+				continue;
+			
+			railData = _recurse_rail(tileMap, checkCell, checkIndex - 1, true);
+			if (railData == null): 
+				for point in tileInfo.get_points(checkIndex, false, tileRotation):
+					points.append(cellPos + point);
+				continue;
 			
 		if (railData.final):
-			rail_paths_lookup.set(railKey, railData.index);
 			return railData;
 			
 		for point in tileInfo.get_points(checkIndex, true, tileRotation):
@@ -487,7 +494,14 @@ func register_tilemap(tileMap : TileMap) -> void:
 			continue;
 
 		var path := _recurse_rail(tileMap, cellCoord);
-		if (path == null || path.final): 
+		if (path == null): 
+			continue;
+			
+		if (path.final):
+			var replaceValue = rail_paths.size();
+			for key in rail_paths_lookup.keys():
+				if (rail_paths_lookup.get(key) == replaceValue):
+					rail_paths_lookup.set(key, path.index);
 			continue;
 		
 		if (path.points.size() <= 0): 
@@ -501,7 +515,7 @@ func register_tilemap(tileMap : TileMap) -> void:
 		var i := 0;
 		while (i < path.points.size()):
 			var p1 := path.points[i];
-			var i2 := (i + 1) % path.points.size();
+			var i2 := posmod(i + 1, path.points.size());
 			var p2 := path.points[i2];
 			if ((p1 - p2).length() >= 5.0): 
 				i += 1;
