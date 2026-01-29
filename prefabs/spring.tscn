@@ -6,14 +6,6 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
 size = Vector2(28, 26)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_sa0ea"]
-atlas = ExtResource("2_4rtcv")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_42ssc"]
-atlas = ExtResource("2_4rtcv")
-region = Rect2(32, 0, 32, 32)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_xcqew"]
 atlas = ExtResource("2_4rtcv")
 region = Rect2(64, 0, 32, 32)
@@ -26,8 +18,30 @@ region = Rect2(96, 0, 32, 32)
 atlas = ExtResource("2_4rtcv")
 region = Rect2(128, 0, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_sa0ea"]
+atlas = ExtResource("2_4rtcv")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_42ssc"]
+atlas = ExtResource("2_4rtcv")
+region = Rect2(32, 0, 32, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_2sftf"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xcqew")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5hllg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ntnhs")
+}],
+"loop": false,
+"name": &"Bounce",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_sa0ea")
@@ -43,20 +57,6 @@ animations = [{
 "loop": true,
 "name": &"Idle",
 "speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xcqew")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5hllg")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ntnhs")
-}],
-"loop": false,
-"name": &"new_animation",
-"speed": 5.0
 }]
 
 [node name="Spring" type="Area2D" unique_id=1376388351]
@@ -71,8 +71,10 @@ debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=704558908]
 sprite_frames = SubResource("SpriteFrames_2sftf")
-animation = &"Idle"
+animation = &"Bounce"
 autoplay = "Idle"
+frame = 2
+frame_progress = 1.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]

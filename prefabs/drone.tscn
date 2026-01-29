@@ -42,6 +42,7 @@ debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=818956688]
 sprite_frames = SubResource("SpriteFrames_01hr8")
 animation = &"Drone"
+autoplay = "Drone"
 frame_progress = 0.00549403
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

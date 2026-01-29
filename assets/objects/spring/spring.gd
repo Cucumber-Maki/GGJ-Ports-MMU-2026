@@ -12,9 +12,8 @@ func _on_body_entered(body: Node2D) -> void:
 	if (center_player):
 		player.position = position + (Vector2.UP.rotated(rotation) * 36);
 	
-	$Sprite.play("Bounced");
-	$Sprite.frame = 0;
-	$Sprite.frame_progress = 0;
+	$Sprite.play("Bounce");
+	$Sprite.set_frame_and_progress(0, 0);
 
 func _on_sprite_animation_finished() -> void:
 	$Sprite.play("Idle")
