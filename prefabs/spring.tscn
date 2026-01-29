@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://ckkenmhn5kq4h"]
+
+[ext_resource type="Script" uid="uid://coxg2rjuq6u01" path="res://assets/objects/spring/spring.gd" id="1_5jb5k"]
+[ext_resource type="Texture2D" uid="uid://b1dgoxnbotgg5" path="res://Everything New/Spring.png" id="2_4rtcv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qaeri"]
+size = Vector2(28, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xcqew"]
+atlas = ExtResource("2_4rtcv")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5hllg"]
+atlas = ExtResource("2_4rtcv")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ntnhs"]
+atlas = ExtResource("2_4rtcv")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sa0ea"]
+atlas = ExtResource("2_4rtcv")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_42ssc"]
+atlas = ExtResource("2_4rtcv")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2sftf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xcqew")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5hllg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ntnhs")
+}],
+"loop": false,
+"name": &"Bounced",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sa0ea")
+}],
+"loop": true,
+"name": &"Disabled",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_42ssc")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="Spring" type="Area2D" unique_id=1376388351]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_5jb5k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1626791071]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_qaeri")
+debug_color = Color(0.5723556, 0.5555106, 3.85046e-07, 0.41960785)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=704558908]
+sprite_frames = SubResource("SpriteFrames_2sftf")
+animation = &"Idle"
+autoplay = "Idle"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]

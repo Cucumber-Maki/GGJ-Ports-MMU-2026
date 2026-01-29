@@ -41,9 +41,11 @@ folder_colors={
 "res://Scenes/": "green",
 "res://assets/": "gray",
 "res://assets/background/": "purple",
+"res://assets/objects/": "yellow",
 "res://assets/player/": "red",
 "res://assets/rails/": "teal",
-"res://assets/tileset/": "yellow"
+"res://assets/tileset/": "yellow",
+"res://prefabs/": "orange"
 }
 
 [input]
@@ -77,6 +79,8 @@ debug_drawRails={
 
 2d_physics/layer_1="environment"
 2d_physics/layer_2="player"
+2d_physics/layer_3="enemies"
+2d_physics/layer_4="objects"
 
 [rendering]
 

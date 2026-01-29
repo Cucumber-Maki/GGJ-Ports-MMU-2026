@@ -1,4 +1,5 @@
 extends RigidBody2D
+class_name Player;
 
 @export_group("Movement Properties", "movement_")
 @export var movement_speed : float = 600.0;
@@ -255,5 +256,21 @@ func jump(normal : Vector2) -> void:
 	movement_momentum.x += jumpDirection.x * jumpForce * effectStrength * 0.5;
 	jump_release_possible = true;
 	jump_coyote_remaining_time = 0.0;
+
+func set_momentum(momentum : Vector2, detatch : bool = false):
+	if (rail_attatched_rail != null):
+		if (detatch):
+			var attachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+			detatch_from_rail(attachedInfo);
+		else:
+			movement_momentum = momentum;
+			return;
+	movement_momentum = momentum;
+	
+func add_momentum(momentum : Vector2):
+	if (rail_attatched_rail != null):
+		var attachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
+		momentum = momentum.rotated(attachedInfo.smooth_normal.angle_to(Vector2.UP));
+	movement_momentum += momentum;
 
 #######################################################################################################
