@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfwo0ilwl7yqi"
-path="res://.godot/imported/Level Clear text.png-0ec4e66031c9b8c610a5b74082402bee.ctex"
+uid="uid://dqxx4b0u6nf3b"
+path="res://.godot/imported/Return Button.png-01cabe58b22155fcae9618ebfa3782c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/Level Clear text.png"
-dest_files=["res://.godot/imported/Level Clear text.png-0ec4e66031c9b8c610a5b74082402bee.ctex"]
+source_file="res://assets/hud/Return Button.png"
+dest_files=["res://.godot/imported/Return Button.png-01cabe58b22155fcae9618ebfa3782c1.ctex"]
 
 [params]
 
