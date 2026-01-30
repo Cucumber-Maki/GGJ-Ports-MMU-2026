@@ -14,7 +14,8 @@ func _on_body_entered(body: Node2D) -> void:
 
 	$Spray.visible = true;
 	GameTimer.s_instance.finished = true;
-	GameTimer.s_instance.get_time();
+	EndTimeMessage.s_instance.present(GameTimer.s_instance.get_time());
+	
 	player.game_win();
 	for camera : Camera2D in player.find_children("*", "Camera2D"):
 		if (camera == null): continue;

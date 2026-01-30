@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b2bss0sr6ipi8"
-path="res://.godot/imported/Ranks.png-c13e21ede617100dc4a0b835fe278912.ctex"
+uid="uid://brgm5a361oakb"
+path="res://.godot/imported/Return Button4.png-9d3be60adb165ae066c79e183fb8dd5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/Ranks.png"
-dest_files=["res://.godot/imported/Ranks.png-c13e21ede617100dc4a0b835fe278912.ctex"]
+source_file="res://assets/hud/Return Button4.png"
+dest_files=["res://.godot/imported/Return Button4.png-9d3be60adb165ae066c79e183fb8dd5e.ctex"]
 
 [params]
 

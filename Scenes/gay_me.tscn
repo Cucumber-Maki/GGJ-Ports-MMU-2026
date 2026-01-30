@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://lg1wrti0dv6m" path="res://assets/background/background.tscn" id="1_01hr8"]
 [ext_resource type="PackedScene" uid="uid://b14g0lksq3jhy" path="res://assets/hud/timer.tscn" id="1_2sftf"]
 [ext_resource type="PackedScene" uid="uid://6parrbhukhll" path="res://assets/player/player.tscn" id="1_ouhd7"]
+[ext_resource type="PackedScene" uid="uid://bmtlo00nyh5jw" path="res://assets/hud/end_time_message.tscn" id="2_mdejw"]
 [ext_resource type="TileSet" uid="uid://dghvu5q1dk7fq" path="res://assets/tileset/tileset.tres" id="3_ouhd7"]
 [ext_resource type="Material" uid="uid://dkmt423pcp657" path="res://assets/tileset/tileset_material.tres" id="5_1lfik"]
 [ext_resource type="PackedScene" uid="uid://ckkenmhn5kq4h" path="res://prefabs/spring.tscn" id="6_1lfik"]
@@ -30,8 +31,9 @@ size = Vector2(20, 200)
 
 [node name="Timer" parent="CanvasLayer" unique_id=1591319583 instance=ExtResource("1_2sftf")]
 
+[node name="EndTimeMessage" parent="CanvasLayer" unique_id=1129717866 instance=ExtResource("2_mdejw")]
+
 [node name="Background" parent="." unique_id=762805178 instance=ExtResource("1_01hr8")]
-visible = false
 
 [node name="Level TileMap" type="TileMap" parent="." unique_id=1328514932]
 material = ExtResource("5_1lfik")
@@ -268,7 +270,7 @@ position = Vector2(3957, 713)
 position = Vector2(2988, 186.5)
 shape = SubResource("RectangleShape2D_2sftf")
 
-[node name="GoalPost" parent="Kill Plane" unique_id=1409850204 instance=ExtResource("12_42ssc")]
+[node name="GoalPost" parent="Kill Plane" unique_id=401690587 instance=ExtResource("12_42ssc")]
 position = Vector2(9279, -2026)
 
 [node name="Checkpoint" parent="." unique_id=1673239243 instance=ExtResource("13_42ssc")]

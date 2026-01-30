@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://bmtlo00nyh5jw"]
+
+[ext_resource type="Texture2D" uid="uid://dfwo0ilwl7yqi" path="res://assets/hud/Level Clear text.png" id="1_jye2e"]
+[ext_resource type="Script" uid="uid://m5ju1vmqdj7m" path="res://assets/hud/end_time_message.gd" id="1_ruoas"]
+[ext_resource type="Texture2D" uid="uid://b2bss0sr6ipi8" path="res://assets/hud/Ranks.png" id="2_ruoas"]
+[ext_resource type="Texture2D" uid="uid://ceixs0a0ehlpm" path="res://assets/hud/Return Button1.png" id="4_vdmnd"]
+[ext_resource type="Texture2D" uid="uid://c4sgsox03kno4" path="res://assets/hud/Return Button3.png" id="5_77815"]
+[ext_resource type="Texture2D" uid="uid://cy1lrxof5futo" path="res://assets/hud/Return Button2.png" id="6_1t5td"]
+[ext_resource type="Texture2D" uid="uid://brgm5a361oakb" path="res://assets/hud/Return Button4.png" id="7_hlidy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlb65"]
+atlas = ExtResource("2_ruoas")
+region = Rect2(0, 0, 16, 16)
+
+[node name="EndTimeMessage" type="MarginContainer" unique_id=1129717866]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -107.0
+offset_right = 107.0
+offset_bottom = 360.0
+grow_horizontal = 2
+script = ExtResource("1_ruoas")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1879907406]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Message" type="TextureRect" parent="VBoxContainer" unique_id=1955155735]
+custom_minimum_size = Vector2(0, 45.22)
+layout_mode = 2
+texture = ExtResource("1_jye2e")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Score" type="TextureRect" parent="VBoxContainer" unique_id=2072200521]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = SubResource("AtlasTexture_mlb65")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer" unique_id=657418206]
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/CenterContainer" unique_id=774623126]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+texture_normal = ExtResource("4_vdmnd")
+texture_pressed = ExtResource("5_77815")
+texture_hover = ExtResource("6_1t5td")
+texture_focused = ExtResource("7_hlidy")
+stretch_mode = 5
+
+[connection signal="pressed" from="VBoxContainer/CenterContainer/TextureButton" to="." method="_on_texture_button_pressed"]
