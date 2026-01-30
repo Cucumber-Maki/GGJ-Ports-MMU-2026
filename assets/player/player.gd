@@ -46,6 +46,7 @@ var jump_air_timer : float = 0.0;
 @export var damage_stun_time : float = 0.5;
 var damage_invulnerability_timer : float = 0.0;
 var damage_stun_timer : float = 0.0;
+var game_won : bool = false;
 
 
 enum Spectrum {
@@ -106,6 +107,7 @@ func get_source_mask() -> WorldRailsInternal.SourceMask:
 # Player inputs.
 
 func input_movement() -> float:
+	if (game_won): return 1.0;
 	return Input.get_axis("PlayerLeft","PlayerRight");
 	
 func input_jump() -> bool:
@@ -200,6 +202,7 @@ func handle_movement(delta : float) -> void:
 	jump_air_timer += delta;
 	if (jump_air_timer >= rail_ceiling_air_ignore_time):
 		rail_ceiling_direction_last_input_on_ceiling = false;
+		rail_ceiling_direction_was_on_ceiling = false;
 		
 	var movementInput := input_movement();
 	if (rail_ceiling_direction_last_input != movementInput):
@@ -367,5 +370,16 @@ func take_damage() -> void:
 	set_color(Spectrum.White, true);
 	damage_invulnerability_timer = damage_invulnerability_time;
 	damage_stun_timer = damage_stun_time;
+	
+func game_win() -> void:
+	game_won = true;
+	
+func game_respawn() -> void:
+	detatch_from_rail(null);
+	position = Checkpoint.lastCheckPoint.position;
+	movement_momentum = Vector2.ZERO;
+	#
+	damage_invulnerability_timer = 0.0;
+	take_damage();
 	
 #######################################################################################################

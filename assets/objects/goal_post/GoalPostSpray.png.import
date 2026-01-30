@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1ykt27yods14"
-path="res://.godot/imported/GoalPostSpray.png-590fc0b0b4036fea0d25ded8e9c12575.ctex"
+path="res://.godot/imported/GoalPostSpray.png-4fa1d2844df2b0c00a60887bf1600a5d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/GoalPostSpray.png"
-dest_files=["res://.godot/imported/GoalPostSpray.png-590fc0b0b4036fea0d25ded8e9c12575.ctex"]
+source_file="res://assets/objects/goal_post/GoalPostSpray.png"
+dest_files=["res://.godot/imported/GoalPostSpray.png-4fa1d2844df2b0c00a60887bf1600a5d.ctex"]
 
 [params]
 

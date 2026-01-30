@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://d2qtct1vyen8m"]
+
+[ext_resource type="Script" uid="uid://bmj2buobpw2op" path="res://assets/objects/kill_plane/kill_plane.gd" id="1_egbm1"]
+
+[node name="Kill Plane" type="Area2D" unique_id=95737460]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_egbm1")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

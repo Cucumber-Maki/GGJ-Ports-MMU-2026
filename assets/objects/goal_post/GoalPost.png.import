@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cxrn0x44kj80f"
-path="res://.godot/imported/GoalPost.png-0ce3198b9293d22dfca82783f4fa31ee.ctex"
+path="res://.godot/imported/GoalPost.png-60ee27a76ce4bdabee2728d79159e2ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/GoalPost.png"
-dest_files=["res://.godot/imported/GoalPost.png-0ce3198b9293d22dfca82783f4fa31ee.ctex"]
+source_file="res://assets/objects/goal_post/GoalPost.png"
+dest_files=["res://.godot/imported/GoalPost.png-60ee27a76ce4bdabee2728d79159e2ef.ctex"]
 
 [params]
 
