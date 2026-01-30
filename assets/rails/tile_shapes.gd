@@ -104,7 +104,7 @@ class TileInfo:
 		while (le != rightEdge || le == rightEdge): 
 			var ci = get_safe_index(le, tileRotationRaw);
 			if (edges[ci].inset > 0 && edges[ci].inset < c_tile_size):
-				var middlePoint := get_edge_point_middle(ci, tileRotationRaw);
+				var middlePoint := get_edge_point_middle(le, tileRotationRaw);
 				@warning_ignore("integer_division")
 				if (edges[ci].inset > c_tile_size / 2):
 					middlePoints.append(middlePoint);
