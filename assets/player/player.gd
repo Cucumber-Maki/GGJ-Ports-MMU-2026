@@ -20,6 +20,7 @@ var movement_momentum : Vector2 = Vector2.ZERO;
 @export var rail_wall_jump_up_momentum_direction_factor : float = 3.0;
 @export var rail_wall_jump_down_jump_scale : float = 1.25;
 @export_range(0.0, 180.0, 0.1, "radians_as_degrees") var rail_ceiling_direction_swap_angle : float = TAU * 0.125;
+@export var rail_ceiling_air_ignore_time : float = 0.4;
 var rail_ceiling_direction_was_on_ceiling : bool = false;
 var rail_ceiling_direction_last_input_on_ceiling : bool = false;
 var rail_ceiling_direction_last_input : float = false;
@@ -35,6 +36,7 @@ var jump_release_possible : bool = false;
 @export var jump_coyote_time : float = 0.1;
 var jump_coyote_direction : Vector2 = Vector2.UP;
 var jump_coyote_remaining_time : float = 0.0;
+var jump_air_timer : float = 0.0;
 
 @export_group("Collision Properties", "collision_")
 @onready var collision_collider_size : float = ($CollisionShape2D.shape as CircleShape2D).radius;
@@ -194,7 +196,10 @@ func handle_movement(delta : float) -> void:
 	if (jump_release_possible && input_jump_release()):
 		movement_momentum.y *= 1.0 - jump_release_strength;
 		jump_release_possible = false;
-		
+	
+	jump_air_timer += delta;
+	if (jump_air_timer >= rail_ceiling_air_ignore_time):
+		rail_ceiling_direction_last_input_on_ceiling = false;
 		
 	var movementInput := input_movement();
 	if (rail_ceiling_direction_last_input != movementInput):
@@ -221,6 +226,7 @@ func handle_movement(delta : float) -> void:
 	
 func handle_rail(delta : float) -> void:
 	jump_release_possible = false;
+	jump_air_timer = 0.0
 	
 	var lastAttachedInfo := rail_attatched_rail.get_point_along_path(rail_attatched_position, rail_detatch_angle_threshold);
 	var isOnCeiling := acos(lastAttachedInfo.normal.dot(Vector2.DOWN)) < rail_ceiling_direction_swap_angle;
