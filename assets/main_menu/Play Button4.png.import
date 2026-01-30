@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cpxhmmixexpp6"
-path="res://.godot/imported/Game Logo final..png-cddf8d295cb159433a842021e1f148b7.ctex"
+uid="uid://vf6d8oy1t7eu"
+path="res://.godot/imported/Play Button4.png-2fabbfcec88d581bb631d578224a7b49.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/Game Logo final..png"
-dest_files=["res://.godot/imported/Game Logo final..png-cddf8d295cb159433a842021e1f148b7.ctex"]
+source_file="res://assets/main_menu/Play Button4.png"
+dest_files=["res://.godot/imported/Play Button4.png-2fabbfcec88d581bb631d578224a7b49.ctex"]
 
 [params]
 

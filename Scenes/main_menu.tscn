@@ -1,0 +1,133 @@
+[gd_scene format=3 uid="uid://diiaudgtmo72o"]
+
+[ext_resource type="Texture2D" uid="uid://cpxhmmixexpp6" path="res://assets/main_menu/Game Logo final..png" id="1_28flt"]
+[ext_resource type="PackedScene" uid="uid://lg1wrti0dv6m" path="res://assets/background/background.tscn" id="2_48xlc"]
+[ext_resource type="Texture2D" uid="uid://ccsdii4w1cl53" path="res://assets/main_menu/Play Button1.png" id="2_trj04"]
+[ext_resource type="TileSet" uid="uid://dghvu5q1dk7fq" path="res://assets/tileset/tileset.tres" id="3_1ehe0"]
+[ext_resource type="Texture2D" uid="uid://ctxdwm830ydf6" path="res://assets/main_menu/Play Button3.png" id="3_16hvj"]
+[ext_resource type="Material" uid="uid://dkmt423pcp657" path="res://assets/tileset/tileset_material.tres" id="3_ce3w2"]
+[ext_resource type="Script" uid="uid://cl5nnqx4mupev" path="res://assets/main_menu/background.gd" id="3_n45e2"]
+[ext_resource type="Texture2D" uid="uid://jk4mglbmpvl1" path="res://assets/main_menu/Play Button2.png" id="4_vr1f0"]
+[ext_resource type="Texture2D" uid="uid://bmwv5isbxrwa1" path="res://assets/main_menu/Exit Button1.png" id="5_t1dhk"]
+[ext_resource type="Texture2D" uid="uid://vf6d8oy1t7eu" path="res://assets/main_menu/Play Button4.png" id="5_vtepg"]
+[ext_resource type="Texture2D" uid="uid://c0r2edv755etg" path="res://assets/main_menu/Exit Button3.png" id="6_5egv6"]
+[ext_resource type="Texture2D" uid="uid://chvighblm3ofe" path="res://assets/player/Cat Sheet.png" id="6_opfnp"]
+[ext_resource type="Texture2D" uid="uid://cyd2pr62eubku" path="res://assets/main_menu/Exit Button2.png" id="7_vtepg"]
+[ext_resource type="Texture2D" uid="uid://dvfxs4an6eyi2" path="res://assets/main_menu/Exit Button4.png" id="9_8dnnj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cp0ys"]
+atlas = ExtResource("6_opfnp")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yhxw7"]
+atlas = ExtResource("6_opfnp")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trj04"]
+atlas = ExtResource("6_opfnp")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_opfnp"]
+atlas = ExtResource("6_opfnp")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_16hvj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cp0ys")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yhxw7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trj04")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yhxw7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_opfnp")
+}],
+"loop": true,
+"name": &"rolling",
+"speed": 5.0
+}]
+
+[node name="MainMenu" type="Node2D" unique_id=90188028]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=411562051]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer" unique_id=37683139]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -104.5
+offset_top = -102.0
+offset_right = 104.5
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_28flt")
+
+[node name="StartButton" type="TextureButton" parent="CanvasLayer" unique_id=389404566]
+offset_left = 166.0
+offset_top = 148.0
+offset_right = 246.0
+offset_bottom = 198.0
+rotation = -0.07227813
+scale = Vector2(2, 2)
+focus_neighbor_left = NodePath("../ExitButton")
+focus_neighbor_right = NodePath("../ExitButton")
+texture_normal = ExtResource("2_trj04")
+texture_pressed = ExtResource("3_16hvj")
+texture_hover = ExtResource("4_vr1f0")
+texture_focused = ExtResource("5_vtepg")
+stretch_mode = 5
+
+[node name="ExitButton" type="TextureButton" parent="CanvasLayer" unique_id=86825030]
+offset_left = 332.0
+offset_top = 157.00002
+offset_right = 396.0
+offset_bottom = 205.00002
+rotation = 0.07648295
+scale = Vector2(1.8, 1.8)
+focus_neighbor_left = NodePath("../StartButton")
+focus_neighbor_right = NodePath("../StartButton")
+texture_normal = ExtResource("5_t1dhk")
+texture_pressed = ExtResource("6_5egv6")
+texture_hover = ExtResource("7_vtepg")
+texture_focused = ExtResource("9_8dnnj")
+stretch_mode = 5
+
+[node name="Background" parent="." unique_id=762805178 node_paths=PackedStringArray("startbutton", "player", "tilemap") instance=ExtResource("2_48xlc")]
+script = ExtResource("3_n45e2")
+scroll_speed = 100.0
+startbutton = NodePath("../CanvasLayer/StartButton")
+player = NodePath("../Player")
+tilemap = NodePath("../TileMap")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=685379722]
+
+[node name="TileMap" type="TileMap" parent="." unique_id=412157669]
+material = ExtResource("3_ce3w2")
+position = Vector2(0, 52)
+tile_set = ExtResource("3_1ehe0")
+format = 2
+layer_0/tile_data = PackedInt32Array(262134, 65536, 0, 262135, 65536, 0, 262136, 65536, 0, 262137, 65536, 0, 262138, 65536, 0, 262139, 65536, 0, 262140, 65536, 0, 262141, 65536, 0, 262142, 65536, 0, 262143, 65536, 0, 196608, 65536, 0, 196609, 65536, 0, 196610, 65536, 0, 196611, 65536, 0, 196612, 65536, 0, 196613, 65536, 0, 196614, 65536, 0, 196615, 65536, 0, 196616, 65536, 0, 196617, 65536, 0, 327670, 0, 1, 393206, 0, 1, 393207, 0, 1, 393208, 0, 1, 327672, 0, 1, 327671, 0, 1, 393209, 0, 1, 393210, 0, 1, 327675, 0, 1, 327674, 0, 1, 327673, 0, 1, 393211, 0, 1, 393212, 0, 1, 393213, 0, 1, 393214, 0, 1, 327678, 0, 1, 327677, 0, 1, 327676, 0, 1, 393215, 0, 1, 327680, 0, 1, 327681, 0, 1, 327682, 0, 1, 327683, 0, 1, 262147, 0, 1, 262148, 0, 1, 262146, 0, 1, 262145, 0, 1, 262144, 0, 1, 327679, 0, 1, 262149, 0, 1, 262150, 0, 1, 262151, 0, 1, 262152, 0, 1, 327686, 0, 1, 327685, 0, 1, 327684, 0, 1, 327687, 0, 1, 327688, 0, 1, 262153, 0, 1, 327689, 0, 1, 196618, 65536, 0, 196619, 65536, 0, 196620, 65536, 0, 262133, 65536, 0, 262132, 65536, 0, 262131, 65536, 0, 262130, 65536, 0, 196621, 65536, 0, 393204, 0, 1, 393203, 0, 1, 393202, 0, 1, 327666, 0, 1, 327667, 0, 1, 327668, 0, 1, 393205, 0, 1, 327669, 0, 1, 262155, 0, 1, 327691, 0, 1, 327692, 0, 1, 262156, 0, 1, 262154, 0, 1, 327690, 0, 1, 327693, 0, 1, 262157, 0, 1)
+
+[node name="Player" type="AnimatedSprite2D" parent="." unique_id=515821552]
+position = Vector2(0, 132)
+sprite_frames = SubResource("SpriteFrames_16hvj")
+animation = &"rolling"
+autoplay = "default"
+
+[connection signal="pressed" from="CanvasLayer/StartButton" to="Background" method="_on_start_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/ExitButton" to="Background" method="_on_exit_button_pressed"]

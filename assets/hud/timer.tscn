@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://b14g0lksq3jhy"]
+
+[ext_resource type="Script" uid="uid://cxlckhiuu67is" path="res://assets/hud/timer.gd" id="1_n0erh"]
+[ext_resource type="Texture2D" uid="uid://b6mkow8uie06e" path="res://Everything New/TimerDigits.png" id="2_knecx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mdejw"]
+atlas = ExtResource("2_knecx")
+region = Rect2(99, 0, 11, 10)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2sftf"]
+load_path = "res://.godot/imported/TimerDigits.png-356249d2b044513292651590e2a17bf0.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlb65"]
+atlas = SubResource("CompressedTexture2D_2sftf")
+region = Rect2(112, 0, 7, 10)
+
+[node name="Timer" type="MarginContainer" unique_id=1591319583]
+offset_right = 220.0
+offset_bottom = 20.0
+script = ExtResource("1_n0erh")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1370744086]
+layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="Digit" type="TextureRect" parent="HBoxContainer" unique_id=1097200004]
+layout_mode = 2
+texture = SubResource("AtlasTexture_mdejw")
+expand_mode = 3
+
+[node name="Digit2" type="TextureRect" parent="HBoxContainer" unique_id=649725259]
+layout_mode = 2
+texture = SubResource("AtlasTexture_mdejw")
+expand_mode = 3
+
+[node name="Colon" type="TextureRect" parent="HBoxContainer" unique_id=1031608949]
+layout_mode = 2
+texture = SubResource("AtlasTexture_mlb65")
+expand_mode = 3
+
+[node name="Digit3" type="TextureRect" parent="HBoxContainer" unique_id=332755450]
+layout_mode = 2
+texture = SubResource("AtlasTexture_mdejw")
+expand_mode = 3
+
+[node name="Digit4" type="TextureRect" parent="HBoxContainer" unique_id=1893487508]
+layout_mode = 2
+texture = SubResource("AtlasTexture_mdejw")
+expand_mode = 3

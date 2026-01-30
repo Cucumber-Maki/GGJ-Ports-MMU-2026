@@ -13,7 +13,7 @@ const ivec2 tileset_size = ivec2(28, 11);
 
 
 void vertex() {
-	v_worldPos = (MODEL_MATRIX * vec4(VERTEX, 1.0, 1.0)).xy / u_gridSize;
+	v_worldPos = (vec4(VERTEX, 1.0, 1.0)).xy / u_gridSize;
 }
 
 vec2 tile_uv(vec2 uv, vec2 uvOffset) {
