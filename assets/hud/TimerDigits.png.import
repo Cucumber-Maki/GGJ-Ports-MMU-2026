@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ikwk47q5lfch"
-path="res://.godot/imported/TimeHUD.png-52f808cc96e12fcb9a556b601e28f12c.ctex"
+uid="uid://b6mkow8uie06e"
+path="res://.godot/imported/TimerDigits.png-bca97e7a41c68c380cb040cf3af28348.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Everything New/TimeHUD.png"
-dest_files=["res://.godot/imported/TimeHUD.png-52f808cc96e12fcb9a556b601e28f12c.ctex"]
+source_file="res://assets/hud/TimerDigits.png"
+dest_files=["res://.godot/imported/TimerDigits.png-bca97e7a41c68c380cb040cf3af28348.ctex"]
 
 [params]
 
