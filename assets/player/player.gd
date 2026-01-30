@@ -85,6 +85,9 @@ func spectrum_can_interact(color : Spectrum) -> bool:
 	return color == Spectrum.White || color == _spectrum_color;
 
 static func bind_on_spectrum_color_change(callback : Callable) -> void:
+	if (s_instance == null):
+		bind_on_spectrum_color_change.call_deferred(callback);
+		return;
 	callback.call(s_instance._spectrum_color);
 	s_instance.on_spectrum_color_change.connect(callback);
 	

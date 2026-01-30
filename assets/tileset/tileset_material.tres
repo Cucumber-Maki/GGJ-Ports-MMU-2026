@@ -1,8 +1,12 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://dkmt423pcp657"]
 
 [ext_resource type="Shader" uid="uid://binwaxlgrrw7i" path="res://assets/tileset/tileset.gdshader" id="1_fh6s2"]
+[ext_resource type="Texture2D" uid="uid://ils8g5sledc2" path="res://assets/tileset/tileset.png" id="2_78rcm"]
 
 [resource]
 shader = ExtResource("1_fh6s2")
 shader_parameter/u_gridColor1 = Color(0.6, 0.6666667, 0.73333335, 1)
 shader_parameter/u_gridColor2 = Color(0.4, 0.46666667, 0.6, 1)
+shader_parameter/u_baseGridTexture = ExtResource("2_78rcm")
+shader_parameter/u_gridSize = 16.0
+shader_parameter/u_activeColor = Vector3(0, 0, 0)
