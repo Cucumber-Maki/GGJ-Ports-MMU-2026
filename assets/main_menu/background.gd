@@ -10,7 +10,7 @@ var time : float = 0;
 var player_last : float = 0;
 
 func _ready() -> void:
-	startbutton.grab_focus(true);
+	startbutton.grab_focus();
 
 func _process(delta: float) -> void:
 	time += delta;
