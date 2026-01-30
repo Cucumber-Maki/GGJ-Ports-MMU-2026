@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://lg1wrti0dv6m" path="res://assets/background/background.tscn" id="1_01hr8"]
 [ext_resource type="PackedScene" uid="uid://b14g0lksq3jhy" path="res://assets/hud/timer.tscn" id="1_2sftf"]
 [ext_resource type="PackedScene" uid="uid://6parrbhukhll" path="res://assets/player/player.tscn" id="1_ouhd7"]
-[ext_resource type="PackedScene" uid="uid://bmtlo00nyh5jw" path="res://assets/hud/end_time_message.tscn" id="2_mdejw"]
+[ext_resource type="PackedScene" path="res://assets/hud/end_time_message.tscn" id="2_mdejw"]
 [ext_resource type="TileSet" uid="uid://dghvu5q1dk7fq" path="res://assets/tileset/tileset.tres" id="3_ouhd7"]
 [ext_resource type="Material" uid="uid://dkmt423pcp657" path="res://assets/tileset/tileset_material.tres" id="5_1lfik"]
 [ext_resource type="PackedScene" uid="uid://ckkenmhn5kq4h" path="res://prefabs/spring.tscn" id="6_1lfik"]
@@ -235,12 +235,12 @@ force = 900.0
 [node name="Spring16" parent="." unique_id=1671510082 instance=ExtResource("6_1lfik")]
 position = Vector2(8939, -253.99951)
 rotation = 0.7853982
-force = 900.0
+force = 1000.0
 
 [node name="Spring15" parent="." unique_id=1894369418 instance=ExtResource("6_1lfik")]
 position = Vector2(9168, -97.99951)
 rotation = -0.7853982
-force = 900.0
+force = 1000.0
 
 [node name="Spike5" parent="." unique_id=1015086075 instance=ExtResource("10_5hllg")]
 position = Vector2(10576, -848)
