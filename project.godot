@@ -25,6 +25,10 @@ ImmediateGizmos2D="*uid://dy3uarox5dcqv"
 ImmediateGizmos3D="*uid://b1itedits8xid"
 WorldRails="*uid://qbusoaet8ynj"
 
+[debug]
+
+settings/gdscript/max_call_stack=2024
+
 [display]
 
 window/size/viewport_width=640
